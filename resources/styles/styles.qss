@@ -1,0 +1,61 @@
+#ServerBarButton {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 25px;
+    padding: 10px;
+}
+#ServerBarButton:hover {
+    background-color: #d9d9d9;
+}
+#ServerBarButton:pressed {
+    background-color: #808080;
+}
+
+#SideBarButton {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 15px;
+    padding: 10px;
+}
+#SideBarButton:hover {
+    background-color: #808080;
+}
+#SideBarButton:pressed {
+    background-color: #d9d9d9;
+}
+
+#UserLabelButton {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 15px;
+    padding: 10px;
+    text-align: left;
+}
+#UserLabelButton:hover {
+    background-color: #808080;
+}
+#UserLabelButton:pressed {
+    background-color: #d9d9d9;
+}
+
+#ServerBar {
+    background-color: #808080;
+}
+
+#SideBar {
+    background-color: #d9d9d9;
+}
+
+#WorkSpace {
+    background-color: #ffffff;
+}
+
+#SideBarSearchBox {
+    background-color: #b0b0b0;
+    border: 2px solid #b0b0b0;
+    border-radius: 20px;
+    padding: 10px;
+}

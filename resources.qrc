@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/images/add_server.png</file>
+        <file>resources/images/add_server_white.png</file>
+        <file>resources/images/camera.png</file>
+        <file>resources/images/camera_white.png</file>
+        <file>resources/images/default_user.png</file>
+        <file>resources/images/default_user_white.png</file>
+        <file>resources/images/direct_messages.png</file>
+        <file>resources/images/direct_messages_white.png</file>
+        <file>resources/images/display.png</file>
+        <file>resources/images/display_white.png</file>
+        <file>resources/images/hung_up.png</file>
+        <file>resources/images/hung_up_white.png</file>
+        <file>resources/images/microphone.png</file>
+        <file>resources/images/microphone_white.png</file>
+        <file>resources/images/settings.png</file>
+        <file>resources/images/settings_white.png</file>
+        <file>resources/images/sound.png</file>
+        <file>resources/images/sound_white.png</file>
+        <file>resources/styles/styles.qss</file>
+        <file>resources/images/search_box_icon.png</file>
+        <file>resources/images/search_box_icon_white.png</file>
+    </qresource>
+</RCC>
