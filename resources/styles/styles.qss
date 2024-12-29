@@ -59,3 +59,60 @@
     border-radius: 20px;
     padding: 10px;
 }
+
+#RegisterWindow {
+    background-color: #b0b0b0;
+    border-radius: 10px;
+}
+
+#AppLabel {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-weight: bold;
+    color: #ffffff;
+    font-size: 24px;
+}
+
+#RegisterWindowField{
+    background-color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+#RegisterButton {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 15px;
+    padding: 10px;
+}
+#RegisterButton:hover {
+    background-color: #808080;
+}
+#RegisterButton:pressed {
+    background-color: #d9d9d9;
+}
+
+#LoginWindow {
+    background-color: #b0b0b0;
+    border-radius: 10px;
+}
+
+#LoginWindowField{
+    background-color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+#LoginButton {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 15px;
+    padding: 10px;
+}
+#LoginButton:hover {
+    background-color: #808080;
+}
+#LoginButton:pressed {
+    background-color: #d9d9d9;
+}

@@ -1,12 +1,17 @@
 #include "include/widgets.h"
 
 SideBar::SideBar(QWidget *parent)
-    : QWidget(parent)
+    :  BaseWidget(parent)
 {
-    this->initUI();
+    this->initialize();
 }
 
-SideBar::~SideBar() {}
+SideBar::~SideBar()
+{
+    delete chats_layout;
+    delete functional_layout;
+    delete user_layout;
+}
 
 void SideBar::initUI()
 {
@@ -21,8 +26,15 @@ void SideBar::initUI()
      *  user_layout - for info about user: username and avatar
      *
      */
+    this->main_layout = new QVBoxLayout(this);
+
+    this->chats_layout = new QVBoxLayout();
     this->chats_layout->setAlignment(Qt::AlignTop);
+
+    this->functional_layout = new QHBoxLayout();
     this->functional_layout->setAlignment(Qt::AlignBottom);
+
+    this->user_layout = new QHBoxLayout();
     this->user_layout->setAlignment(Qt::AlignBottom);
 
     /*  Initialize buttons for side bar
@@ -35,26 +47,32 @@ void SideBar::initUI()
      *  user_label_button - label with username and avatar which can send to user's settings
      *
      */
+    this->camera_button = new QPushButton(this);
     this->camera_button->setObjectName("SideBarButton");
     this->camera_button->setIcon(QIcon(":/resources/images/camera.png"));
     this->camera_button->setIconSize(QSize(30, 30));
 
+    this->display_button= new QPushButton(this);
     this->display_button->setObjectName("SideBarButton");
     this->display_button->setIcon(QIcon(":/resources/images/display.png"));
     this->display_button->setIconSize(QSize(30, 30));
 
+    this->microphone_button = new QPushButton(this);
     this->microphone_button->setObjectName("SideBarButton");
     this->microphone_button->setIcon(QIcon(":/resources/images/microphone.png"));
     this->microphone_button->setIconSize(QSize(30, 30));
 
+    this->sound_button = new QPushButton(this);
     this->sound_button->setObjectName("SideBarButton");
     this->sound_button->setIcon(QIcon(":/resources/images/sound.png"));
     this->sound_button->setIconSize(QSize(30, 30));
 
+    this->hung_up_button = new QPushButton(this);
     this->hung_up_button->setObjectName("SideBarButton");
     this->hung_up_button->setIcon(QIcon(":/resources/images/hung_up.png"));
     this->hung_up_button->setIconSize(QSize(30, 30));
 
+    this->user_label_button = new QPushButton("Username\nonline", this); /* TODO: fix online status and username */
     this->user_label_button->setObjectName("UserLabelButton");
     this->user_label_button->setIcon(QIcon(":/resources/images/default_user.png"));
     this->user_label_button->setIconSize(QSize(40, 40));
@@ -62,6 +80,7 @@ void SideBar::initUI()
     /*
      *  Initialize search box for side bar
      */
+    this->search_box = new QLineEdit(this);
     this->search_box->setObjectName("SideBarSearchBox");
     QAction *icon_action = new QAction(QIcon(":/resources/images/search_box_icon.png"), "", search_box);
     this->search_box->addAction(icon_action, QLineEdit::TrailingPosition);
@@ -95,31 +114,5 @@ void SideBar::initUI()
 
     //this->main_layout->setContentsMargins(0,0,0,0);
     this->main_layout->setSpacing(0);
-
-    /*
-     *  Set styles
-     */
-    QFile style_file(":/resources/styles/styles.qss");
-    if (style_file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QString style_sheet = style_file.readAll();
-
-        this->setStyleSheet(style_sheet);
-        this->camera_button->setStyleSheet(style_sheet);
-        this->display_button->setStyleSheet(style_sheet);
-        this->microphone_button->setStyleSheet(style_sheet);
-        this->sound_button->setStyleSheet(style_sheet);
-        this->hung_up_button->setStyleSheet(style_sheet);
-        this->user_label_button->setStyleSheet(style_sheet);
-
-        style_file.close();
-    }
 }
 
-void SideBar::paintEvent(QPaintEvent *pe)
-{
-    QStyleOption o;
-    o.initFrom(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &o, &p, this);
-};

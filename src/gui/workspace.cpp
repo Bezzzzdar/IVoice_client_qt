@@ -1,9 +1,9 @@
 #include "include/widgets.h"
 
 WorkSpace::WorkSpace(QWidget *parent)
-    : QWidget(parent)
+    : BaseWidget(parent)
 {
-    this->initUI();
+    this->initialize();
 }
 
 WorkSpace::~WorkSpace() {}
@@ -17,11 +17,12 @@ void WorkSpace::initUI()
      *  To be continued...
      *
      */
+    this->main_layout = new QHBoxLayout(this);
 
     /*
      *  Initialize default label
      */
-    QLabel *default_label = new QLabel("Select chat or server to start messaging");
+    QLabel *default_label = new QLabel("Select chat or server to start messaging", this);
     default_label->setAlignment(Qt::AlignCenter);
 
     /*
@@ -47,11 +48,3 @@ void WorkSpace::initUI()
         style_file.close();
     }
 }
-
-void WorkSpace::paintEvent(QPaintEvent *pe)
-{
-    QStyleOption o;
-    o.initFrom(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &o, &p, this);
-};
