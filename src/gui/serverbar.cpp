@@ -8,8 +8,8 @@ ServerBar::ServerBar(QWidget *parent)
 
 ServerBar::~ServerBar()
 {
-    delete servers_layout;
-    delete functional_layout;
+    delete serversLayout;
+    delete functionalLayout;
 }
 
 void ServerBar::initUI()
@@ -19,61 +19,61 @@ void ServerBar::initUI()
 
     /*  Initialize layouts for server bar
      *
-     *  main_layout - for all widget
-     *  servers_layout - for servers and button for add server
-     *  functional_layout - for functional buttons: settings_button and direct_messages_button
+     *  mainLayout - for all widget
+     *  serversLayout - for servers and button for add server
+     *  functionalLayout - for functional buttons: settingsButton and directMessagesButton
      *
      */
-    this->main_layout = new QVBoxLayout(this);
+    this->mainLayout = new QVBoxLayout(this);
 
-    this->servers_layout = new QVBoxLayout();
-    this->servers_layout->setAlignment(Qt::AlignTop);
+    this->serversLayout = new QVBoxLayout();
+    this->serversLayout->setAlignment(Qt::AlignTop);
 
-    this->functional_layout = new QVBoxLayout();
-    this->functional_layout->setAlignment(Qt::AlignBottom);
+    this->functionalLayout = new QVBoxLayout();
+    this->functionalLayout->setAlignment(Qt::AlignBottom);
 
     /*  Initialize buttons for server bar
      *
-     *  add_server_button - button for adding new server
-     *  settings_button - button to view and change account settings
-     *  direct_messages_button - button to go to users direct messages
+     *  addServerButton - button for adding new server
+     *  settingsButton - button to view and change account settings
+     *  directMessagesButton - button to go to users direct messages
      *
      */
-    this->add_server_button = new QPushButton(this);
-    this->add_server_button->setObjectName("ServerBarButton");
-    this->add_server_button->setIcon(QIcon(":/resources/images/add_server_white.png"));
-    this->add_server_button->setIconSize(QSize(40, 40));
+    this->addServerButton = new QPushButton(this);
+    this->addServerButton->setObjectName("ServerBarButton");
+    this->addServerButton->setIcon(QIcon(":/resources/images/add_server_white.png"));
+    this->addServerButton->setIconSize(QSize(40, 40));
 
-    this->settings_button = new QPushButton(this);
-    this->settings_button->setObjectName("ServerBarButton");
-    this->settings_button->setIcon(QIcon(":/resources/images/settings_white.png"));
-    this->settings_button->setIconSize(QSize(40, 40));
+    this->settingsButton = new QPushButton(this);
+    this->settingsButton->setObjectName("ServerBarButton");
+    this->settingsButton->setIcon(QIcon(":/resources/images/settings_white.png"));
+    this->settingsButton->setIconSize(QSize(40, 40));
 
-    this->direct_messages_button = new QPushButton(this);
-    this->direct_messages_button->setObjectName("ServerBarButton");
-    this->direct_messages_button->setIcon(QIcon(":/resources/images/direct_messages_white.png"));
-    this->direct_messages_button->setIconSize(QSize(40, 40));
+    this->directMessagesButton = new QPushButton(this);
+    this->directMessagesButton->setObjectName("ServerBarButton");
+    this->directMessagesButton->setIcon(QIcon(":/resources/images/direct_messages_white.png"));
+    this->directMessagesButton->setIconSize(QSize(40, 40));
 
     /*
      *  Add buttons to layouts
      */
-    this->servers_layout->addWidget(this->add_server_button);
+    this->serversLayout->addWidget(this->addServerButton);
 
-    this->functional_layout->addWidget(this->direct_messages_button);
-    this->functional_layout->addWidget(this->settings_button);
+    this->functionalLayout->addWidget(this->directMessagesButton);
+    this->functionalLayout->addWidget(this->settingsButton);
 
     /*
      *  Add sub-layouts to main layout
      */
-    this->main_layout->addLayout(this->servers_layout);
-    this->main_layout->addLayout(this->functional_layout);
+    this->mainLayout->addLayout(this->serversLayout);
+    this->mainLayout->addLayout(this->functionalLayout);
 
     /*
      *  Set layout for widget
      */
-    setLayout(this->main_layout);
+    setLayout(this->mainLayout);
 
-    this->main_layout->setContentsMargins(0,0,0,0);
-    this->main_layout->setSpacing(0);
+    this->mainLayout->setContentsMargins(0,0,0,0);
+    this->mainLayout->setSpacing(0);
 }
 

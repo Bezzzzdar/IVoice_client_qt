@@ -10,24 +10,24 @@ BaseWidget::BaseWidget(QWidget *parent)
 
 BaseWidget::~BaseWidget() {}
 
-void BaseWidget::paintEvent(QPaintEvent *pe)
+void BaseWidget::paintEvent(QPaintEvent *event)
 {
-    QStyleOption opt;
-    opt.initFrom(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    QStyleOption option;
+    option.initFrom(this);
+    QPainter painter(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &option, &painter, this);
 }
 
 void BaseWidget::applyStyles()
 {
-    QFile style_file(":/resources/styles/styles.qss");
-    if (style_file.open(QIODevice::ReadOnly | QIODevice::Text))
+    QFile styleFile(":/resources/styles/styles.qss");
+    if (styleFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QString style_sheet = style_file.readAll();
+        QString styleSheet = styleFile.readAll();
 
-        this->setStyleSheet(style_sheet);
+        this->setStyleSheet(styleSheet);
 
-        style_file.close();
+        styleFile.close();
     }
 }
 
@@ -48,24 +48,24 @@ BaseDialog::BaseDialog(QWidget *parent)
 
 BaseDialog::~BaseDialog() {}
 
-void BaseDialog::paintEvent(QPaintEvent *pe)
+void BaseDialog::paintEvent(QPaintEvent *event)
 {
-    QStyleOption opt;
-    opt.initFrom(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    QStyleOption option;
+    option.initFrom(this);
+    QPainter painter(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &option, &painter, this);
 }
 
 void BaseDialog::applyStyles()
 {
-    QFile style_file(":/resources/styles/styles.qss");
-    if (style_file.open(QIODevice::ReadOnly | QIODevice::Text))
+    QFile styleFile(":/resources/styles/styles.qss");
+    if (styleFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QString style_sheet = style_file.readAll();
+        QString styleSheet = styleFile.readAll();
 
-        this->setStyleSheet(style_sheet);
+        this->setStyleSheet(styleSheet);
 
-        style_file.close();
+        styleFile.close();
     }
 }
 

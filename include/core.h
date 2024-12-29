@@ -29,22 +29,23 @@ class LIBCORE_API Server : public QObject
     Q_OBJECT
 
 public:
-    static Server* instance(const QString& server_address = "", int server_port = 0);
+    static Server* instance(const QString& serverAddress = "", int serverPort = 0);
 
     Server(const Server&) = delete;
     Server& operator = (const Server&) = delete;
     Server(Server&&) = delete;
     Server& operator = (Server&&) = delete;
 
-    void authRegister(const QString& user_name, const QString& display_name,
-                                  const QString& email, const QString& password, const QString& birth_date);
+    void authRegister(const QString& username, const QString& displayName,
+                      const QString& email, const QString& password,
+                      const QString& birthDate);
     void authLogin(const QString& login, const QString& password);
     // Q_INVOKABLE void authLogout();
     // Q_INVOKABLE void authRefresh();
     ~Server();
 
 private:
-    explicit Server(const QString& server_address, int server_port, QObject* parent = nullptr);
+    explicit Server(const QString& serverAddress, int serverPort, QObject* parent = nullptr);
 
     static Server* m_instance;
     static QMutex mutex;
@@ -79,11 +80,11 @@ private:
     QString accessToken;
     QString refreshToken;
     QString username;
-    QString display_name;
+    QString displayName;
     QString email;
-    QString phone_number;
+    QString phoneNumber;
     QString password;
-    QDate birth_date;
+    QDate birthDate;
 
 public:
     static User* instance(QObject* parent = nullptr);
@@ -92,11 +93,11 @@ public:
     void setAccessToken(const QString& accessToken);
     void setRefreshToken(const QString& refreshToken);
     void setUsername(const QString& username);
-    void setDisplayName(const QString& display_name);
+    void setDisplayName(const QString& displayName);
     void setEmail(const QString& email);
-    void setPhoneNumber(const QString& phone_number);
+    void setPhoneNumber(const QString& phoneNumber);
     void setPassword(const QString& password);
-    void setBirthDate(QDate birth_date);
+    void setBirthDate(QDate birthDate);
 
     QString getAccessToken();
     QString getRefreshToken();

@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete main_layout;
+    delete mainLayout;
 }
 
 void MainWindow::initUI()
@@ -21,23 +21,23 @@ void MainWindow::initUI()
     this->resize(1400, 900);
     this->setMinimumSize(900, 600);
 
-    this->central_widget = new QWidget(this);
-    this->main_layout = new QHBoxLayout();
-    central_widget->setLayout(main_layout);
-    main_layout->setContentsMargins(0,0,0,0);
-    main_layout->setSpacing(0);
+    this->centralWidget = new QWidget(this);
+    this->mainLayout = new QHBoxLayout();
+    centralWidget->setLayout(mainLayout);
+    mainLayout->setContentsMargins(0,0,0,0);
+    mainLayout->setSpacing(0);
 
     this->stackedWidget = new QStackedWidget(this);
 
-    this->login_window = new LoginWindow(this, this->stackedWidget);
-    this->register_window = new RegisterWindow(this, this->stackedWidget);
+    this->loginWindow = new LoginWindow(this, this->stackedWidget);
+    this->registerWindow = new RegisterWindow(this, this->stackedWidget);
 
-    this->stackedWidget->addWidget(login_window);
-    this->stackedWidget->addWidget(register_window);
-    this->stackedWidget->setCurrentWidget(login_window);
+    this->stackedWidget->addWidget(loginWindow);
+    this->stackedWidget->addWidget(registerWindow);
+    this->stackedWidget->setCurrentWidget(loginWindow);
 
-    main_layout->addWidget(this->stackedWidget, 0, Qt::AlignCenter);
-    setCentralWidget(central_widget);
+    mainLayout->addWidget(this->stackedWidget, 0, Qt::AlignCenter);
+    setCentralWidget(centralWidget);
 }
 
 void MainWindow::switchToMainUI()
@@ -49,11 +49,11 @@ void MainWindow::switchToMainUI()
         this->stackedWidget = nullptr;
     }
 
-    this->server_bar = new ServerBar(this);
-    this->side_bar = new SideBar(this);
+    this->serverBar = new ServerBar(this);
+    this->sideBar = new SideBar(this);
     this->workspace = new WorkSpace(this);
 
-    main_layout->addWidget(server_bar);
-    main_layout->addWidget(side_bar);
-    main_layout->addWidget(workspace);
+    mainLayout->addWidget(serverBar);
+    mainLayout->addWidget(sideBar);
+    mainLayout->addWidget(workspace);
 }
