@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
 
     auto* server = LibCore::Server::instance(server_address, server_port);
 
-    MainWindow main_window;
+    MainWindow mainWindow;
 
-    main_window.show();
+    mainWindow.show();
     return app.exec();
 }

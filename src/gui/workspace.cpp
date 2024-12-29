@@ -13,38 +13,28 @@ void WorkSpace::initUI()
     this->setObjectName("WorkSpace");
     /*  Initialize layouts for workspace
      *
-     *  main_layout - for all widget
+     *  mainLayout - for all widget
      *  To be continued...
      *
      */
-    this->main_layout = new QHBoxLayout(this);
+    this->mainLayout = new QHBoxLayout(this);
 
     /*
      *  Initialize default label
      */
-    QLabel *default_label = new QLabel("Select chat or server to start messaging", this);
-    default_label->setAlignment(Qt::AlignCenter);
+    QLabel *defaultLabel = new QLabel("Select chat or server to start messaging", this);
+    defaultLabel->setAlignment(Qt::AlignCenter);
 
     /*
      *  Add default label to layout
      */
-    this->main_layout->addWidget(default_label);
+    this->mainLayout->addWidget(defaultLabel);
 
     /*
      *  Set layout for widget
      */
-    setLayout(this->main_layout);
+    setLayout(this->mainLayout);
 
-    this->main_layout->setContentsMargins(0,0,0,0);
-    this->main_layout->setSpacing(0);
-
-    QFile style_file(":/resources/styles/styles.qss");
-    if (style_file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QString style_sheet = style_file.readAll();
-
-        this->setStyleSheet(style_sheet);
-
-        style_file.close();
-    }
+    this->mainLayout->setContentsMargins(0,0,0,0);
+    this->mainLayout->setSpacing(0);
 }

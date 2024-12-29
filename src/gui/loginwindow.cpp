@@ -20,72 +20,72 @@ void LoginWindow::initUI()
 
     /*  Initialize layouts for register window
      *
-     *  main_layout - for all widget
+     *  mainLayout - for all widget
      *
      */
-    this->main_layout = new QVBoxLayout(this);
+    this->mainLayout = new QVBoxLayout(this);
 
     /*  Initialize main widget label
      *
-     *  app_label - IVoice
+     *  appLabel - IVoice
      *
      */
 
-    this->app_label = new QLabel("IVoice", this);
-    this->app_label->setAlignment(Qt::AlignCenter);
-    this->app_label->setObjectName("AppLabel");
+    this->appLabel = new QLabel("IVoice", this);
+    this->appLabel->setAlignment(Qt::AlignCenter);
+    this->appLabel->setObjectName("AppLabel");
 
     /*  Initialize fields for entering user's data
      *
-     *  login_field - field for entering user's name or user's email or user's phone number
-     *  password_field - field for entering user's password
+     *  loginField - field for entering user's name or user's email or user's phone number
+     *  passwordField - field for entering user's password
      *
      */
 
-    this->login_field  = new QLineEdit(this);
-    this->login_field->setPlaceholderText("Username/Email/Phone number");
-    //this->login_field->setAlignment(Qt::AlignCenter);
-    this->login_field->setObjectName("LoginWindowField");
+    this->loginField  = new QLineEdit(this);
+    this->loginField->setPlaceholderText("Username/Email/Phone number");
+    //this->loginField->setAlignment(Qt::AlignCenter);
+    this->loginField->setObjectName("LoginWindowField");
 
-    this->password_field  = new QLineEdit(this);
-    this->password_field->setPlaceholderText("Password");
-    //this->password_field->setAlignment(Qt::AlignCenter);
-    this->password_field->setObjectName("LoginWindowField");
+    this->passwordField  = new QLineEdit(this);
+    this->passwordField->setPlaceholderText("Password");
+    //this->passwordField->setAlignment(Qt::AlignCenter);
+    this->passwordField->setObjectName("LoginWindowField");
 
     /*  Initialize buttons for register window
      *
-     *  login_button - button for login into the app
-     *  no_account_button - if user haven't got an account
+     *  loginButton - button for login into the app
+     *  noAccountButton - if user haven't got an account
      *
      */
-    this->login_button = new QPushButton("Login", this);
-    this->login_button->setObjectName("LoginButton");
-    connect(this->login_button, &QPushButton::clicked, this, &LoginWindow::onLoginButtonClicked); // add signal for button
+    this->loginButton = new QPushButton("Login", this);
+    this->loginButton->setObjectName("LoginButton");
+    connect(this->loginButton, &QPushButton::clicked, this, &LoginWindow::onLoginButtonClicked); // add signal for button
 
-    this->no_account_button = new QPushButton("I don't have an account.", this);
-    this->no_account_button->setObjectName("LoginButton");
-    connect(this->no_account_button, &QPushButton::clicked, this, &LoginWindow::onNoAccountButtonClicked); // add signal for button
+    this->noAccountButton = new QPushButton("I don't have an account.", this);
+    this->noAccountButton->setObjectName("LoginButton");
+    connect(this->noAccountButton, &QPushButton::clicked, this, &LoginWindow::onNoAccountButtonClicked); // add signal for button
     /*
      *  Set layout for widget
      */
-    setLayout(this->main_layout);
+    setLayout(this->mainLayout);
 
     /*
      *  Add components to layout
      */
-    this->main_layout->addWidget(app_label);
-    this->main_layout->addWidget(login_field);
-    this->main_layout->addWidget(password_field);
-    this->main_layout->addWidget(login_button);
-    this->main_layout->addWidget(no_account_button);
+    this->mainLayout->addWidget(appLabel);
+    this->mainLayout->addWidget(loginField);
+    this->mainLayout->addWidget(passwordField);
+    this->mainLayout->addWidget(loginButton);
+    this->mainLayout->addWidget(noAccountButton);
 }
 
 void LoginWindow::onLoginButtonClicked()
 {
-    QString login = this->login_field->text();
-    QString password = this->password_field->text();
+    QString login = this->loginField->text();
+    QString password = this->passwordField->text();
 
-    auto server = LibCore::Server::instance();
+    auto* server = LibCore::Server::instance();
     server->authLogin(login, password);
 }
 
@@ -93,8 +93,8 @@ void LoginWindow::onNoAccountButtonClicked()
 {
     stackedWidget->setCurrentIndex(1);
 
-    this->login_field->clear();
-    this->password_field->clear();
+    this->loginField->clear();
+    this->passwordField->clear();
 }
 
 void LoginWindow::onLoginSuccessful()
@@ -103,17 +103,16 @@ void LoginWindow::onLoginSuccessful()
 
     qDebug() << "call onLoginSuccessful";
 
-    this->login_field->clear();
-    this->password_field->clear();
+    this->loginField->clear();
+    this->passwordField->clear();
 }
 
 void LoginWindow::onLoginUnsuccessful(const QString &errorMessage)
 {
-    //qDebug() << errorMessage;
     QMessageBox::critical(this, "Login", "Login was unsuccessful!\n" + errorMessage);
 
     qDebug() << "call onLoginUnsuccessful";
 
-    this->login_field->clear();
-    this->password_field->clear();
+    this->loginField->clear();
+    this->passwordField->clear();
 }

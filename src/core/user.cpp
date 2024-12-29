@@ -46,9 +46,9 @@ void User::setUsername(const QString& username)
     this->username = username;
 }
 
-void User::setDisplayName(const QString& display_name)
+void User::setDisplayName(const QString& displayName)
 {
-    this->display_name = display_name;
+    this->displayName = displayName;
 }
 
 void User::setEmail(const QString& email)
@@ -56,9 +56,9 @@ void User::setEmail(const QString& email)
     this->email = email;
 }
 
-void User::setPhoneNumber(const QString& phone_number)
+void User::setPhoneNumber(const QString& phoneNumber)
 {
-    this->phone_number = phone_number;
+    this->phoneNumber = phoneNumber;
 }
 
 void User::setPassword(const QString& password)
@@ -66,9 +66,9 @@ void User::setPassword(const QString& password)
     this->password = password;
 }
 
-void User::setBirthDate(QDate birth_date)
+void User::setBirthDate(QDate birthDate)
 {
-    this->birth_date = birth_date;
+    this->birthDate = birthDate;
 }
 
 /*************************************************************
@@ -93,7 +93,7 @@ QString User::getUsername()
 
 QString User::getDisplayName()
 {
-    return this->display_name;
+    return this->displayName;
 }
 
 QString User::getEmail()
@@ -103,7 +103,7 @@ QString User::getEmail()
 
 QString User::getPhoneNumber()
 {
-    return this->phone_number;
+    return this->phoneNumber;
 }
 
 QString User::getPassword()
@@ -113,6 +113,6 @@ QString User::getPassword()
 
 QDate User::getBirthDate()
 {
-    return this->birth_date;
+    return this->birthDate;
 }
 } // namespace LibCore

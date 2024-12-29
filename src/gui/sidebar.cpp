@@ -8,9 +8,9 @@ SideBar::SideBar(QWidget *parent)
 
 SideBar::~SideBar()
 {
-    delete chats_layout;
-    delete functional_layout;
-    delete user_layout;
+    delete chatsLayout;
+    delete functionalLayout;
+    delete userLayout;
 }
 
 void SideBar::initUI()
@@ -20,99 +20,99 @@ void SideBar::initUI()
 
     /*  Initialize layouts for side bar
      *
-     *  main_layout - for all widget
-     *  chats_layout - for chats
-     *  functional_layout - for functional buttons: camera_button, display_button, microphone_button, sound_button, hung_up_button
-     *  user_layout - for info about user: username and avatar
+     *  mainLayout - for all widget
+     *  chatsLayout - for chats
+     *  functionalLayout - for functional buttons: cameraButton, displayButton, microphoneButton, soundButton, hungUpButton
+     *  userLayout - for info about user: username and avatar
      *
      */
-    this->main_layout = new QVBoxLayout(this);
+    this->mainLayout = new QVBoxLayout(this);
 
-    this->chats_layout = new QVBoxLayout();
-    this->chats_layout->setAlignment(Qt::AlignTop);
+    this->chatsLayout = new QVBoxLayout();
+    this->chatsLayout->setAlignment(Qt::AlignTop);
 
-    this->functional_layout = new QHBoxLayout();
-    this->functional_layout->setAlignment(Qt::AlignBottom);
+    this->functionalLayout = new QHBoxLayout();
+    this->functionalLayout->setAlignment(Qt::AlignBottom);
 
-    this->user_layout = new QHBoxLayout();
-    this->user_layout->setAlignment(Qt::AlignBottom);
+    this->userLayout = new QHBoxLayout();
+    this->userLayout->setAlignment(Qt::AlignBottom);
 
     /*  Initialize buttons for side bar
      *
-     *  camera_button - for turn on/off the user's camera
-     *  display_button - for turn on/off ща demonstration user's screen
-     *  microphone_button - for turn on/off user's microphone
-     *  sound_button - for turn on/off user's sound
-     *  hung_up_button - for end the call
-     *  user_label_button - label with username and avatar which can send to user's settings
+     *  cameraButton - for turn on/off the user's camera
+     *  displayButton - for turn on/off ща demonstration user's screen
+     *  microphoneButton - for turn on/off user's microphone
+     *  soundButton - for turn on/off user's sound
+     *  hungUpButton - for end the call
+     *  userLabelButton - label with username and avatar which can send to user's settings
      *
      */
-    this->camera_button = new QPushButton(this);
-    this->camera_button->setObjectName("SideBarButton");
-    this->camera_button->setIcon(QIcon(":/resources/images/camera.png"));
-    this->camera_button->setIconSize(QSize(30, 30));
+    this->cameraButton = new QPushButton(this);
+    this->cameraButton->setObjectName("SideBarButton");
+    this->cameraButton->setIcon(QIcon(":/resources/images/camera.png"));
+    this->cameraButton->setIconSize(QSize(30, 30));
 
-    this->display_button= new QPushButton(this);
-    this->display_button->setObjectName("SideBarButton");
-    this->display_button->setIcon(QIcon(":/resources/images/display.png"));
-    this->display_button->setIconSize(QSize(30, 30));
+    this->displayButton= new QPushButton(this);
+    this->displayButton->setObjectName("SideBarButton");
+    this->displayButton->setIcon(QIcon(":/resources/images/display.png"));
+    this->displayButton->setIconSize(QSize(30, 30));
 
-    this->microphone_button = new QPushButton(this);
-    this->microphone_button->setObjectName("SideBarButton");
-    this->microphone_button->setIcon(QIcon(":/resources/images/microphone.png"));
-    this->microphone_button->setIconSize(QSize(30, 30));
+    this->microphoneButton = new QPushButton(this);
+    this->microphoneButton->setObjectName("SideBarButton");
+    this->microphoneButton->setIcon(QIcon(":/resources/images/microphone.png"));
+    this->microphoneButton->setIconSize(QSize(30, 30));
 
-    this->sound_button = new QPushButton(this);
-    this->sound_button->setObjectName("SideBarButton");
-    this->sound_button->setIcon(QIcon(":/resources/images/sound.png"));
-    this->sound_button->setIconSize(QSize(30, 30));
+    this->soundButton = new QPushButton(this);
+    this->soundButton->setObjectName("SideBarButton");
+    this->soundButton->setIcon(QIcon(":/resources/images/sound.png"));
+    this->soundButton->setIconSize(QSize(30, 30));
 
-    this->hung_up_button = new QPushButton(this);
-    this->hung_up_button->setObjectName("SideBarButton");
-    this->hung_up_button->setIcon(QIcon(":/resources/images/hung_up.png"));
-    this->hung_up_button->setIconSize(QSize(30, 30));
+    this->hungUpButton = new QPushButton(this);
+    this->hungUpButton->setObjectName("SideBarButton");
+    this->hungUpButton->setIcon(QIcon(":/resources/images/hung_up.png"));
+    this->hungUpButton->setIconSize(QSize(30, 30));
 
-    this->user_label_button = new QPushButton("Username\nonline", this); /* TODO: fix online status and username */
-    this->user_label_button->setObjectName("UserLabelButton");
-    this->user_label_button->setIcon(QIcon(":/resources/images/default_user.png"));
-    this->user_label_button->setIconSize(QSize(40, 40));
+    this->userLabelButton = new QPushButton("Username\nonline", this); /* TODO: fix online status and username */
+    this->userLabelButton->setObjectName("UserLabelButton");
+    this->userLabelButton->setIcon(QIcon(":/resources/images/default_user.png"));
+    this->userLabelButton->setIconSize(QSize(40, 40));
 
     /*
      *  Initialize search box for side bar
      */
-    this->search_box = new QLineEdit(this);
-    this->search_box->setObjectName("SideBarSearchBox");
-    QAction *icon_action = new QAction(QIcon(":/resources/images/search_box_icon.png"), "", search_box);
-    this->search_box->addAction(icon_action, QLineEdit::TrailingPosition);
+    this->searchBox = new QLineEdit(this);
+    this->searchBox->setObjectName("SideBarSearchBox");
+    QAction *iconAction = new QAction(QIcon(":/resources/images/search_box_icon.png"), "", searchBox);
+    this->searchBox->addAction(iconAction, QLineEdit::TrailingPosition);
 
     /*
      *  Add buttons to layouts
      */
-    this->chats_layout->addWidget(search_box);
+    this->chatsLayout->addWidget(searchBox);
 
-    this->functional_layout->addWidget(this->camera_button);
-    this->functional_layout->addWidget(this->display_button);
-    this->functional_layout->addWidget(this->microphone_button);
-    this->functional_layout->addWidget(this->sound_button);
-    this->functional_layout->addWidget(this->hung_up_button);
+    this->functionalLayout->addWidget(this->cameraButton);
+    this->functionalLayout->addWidget(this->displayButton);
+    this->functionalLayout->addWidget(this->microphoneButton);
+    this->functionalLayout->addWidget(this->soundButton);
+    this->functionalLayout->addWidget(this->hungUpButton);
 
     /*TODO: fix this shit*/
-    this->user_layout->addWidget(this->user_label_button);
+    this->userLayout->addWidget(this->userLabelButton);
 
     /*
      *  Add sub-layouts to main layout
      */
-    this->main_layout->addLayout(this->chats_layout);
-    this->main_layout->addStretch();
-    this->main_layout->addLayout(this->functional_layout);
-    this->main_layout->addLayout(this->user_layout);
+    this->mainLayout->addLayout(this->chatsLayout);
+    this->mainLayout->addStretch();
+    this->mainLayout->addLayout(this->functionalLayout);
+    this->mainLayout->addLayout(this->userLayout);
 
     /*
      *  Set layout for widget
      */
-    setLayout(this->main_layout);
+    setLayout(this->mainLayout);
 
-    //this->main_layout->setContentsMargins(0,0,0,0);
-    this->main_layout->setSpacing(0);
+    //this->mainLayout->setContentsMargins(0,0,0,0);
+    this->mainLayout->setSpacing(0);
 }
 

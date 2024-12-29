@@ -34,7 +34,7 @@ public:
 
 protected:
     virtual void initUI() = 0;
-    void paintEvent(QPaintEvent *pe) override;
+    void paintEvent(QPaintEvent *event);
     void applyStyles();
 };
 
@@ -48,7 +48,7 @@ public:
     void initialize();
 protected:
     virtual void initUI() = 0;
-    void paintEvent(QPaintEvent *pe) override;
+    void paintEvent(QPaintEvent *event);
     void applyStyles();
 
 };
@@ -66,14 +66,14 @@ protected:
     void initUI() override;
 
 private:
-    QVBoxLayout *main_layout;
-    QVBoxLayout *servers_layout;
-    QVBoxLayout *functional_layout;
-    QPushButton *add_server_button;
-    QPushButton *settings_button;
-    QPushButton *direct_messages_button;
+    QVBoxLayout *mainLayout;
+    QVBoxLayout *serversLayout;
+    QVBoxLayout *functionalLayout;
+    QPushButton *addServerButton;
+    QPushButton *settingsButton;
+    QPushButton *directMessagesButton;
 
-    QVector<QPushButton> *server_list;
+    QVector<QPushButton> *serverList;
 };
 
 class SideBar : public BaseWidget
@@ -85,17 +85,17 @@ public:
     ~SideBar();
 
 private:
-    QVBoxLayout *main_layout;
-    QVBoxLayout *chats_layout;
-    QHBoxLayout *functional_layout;
-    QHBoxLayout *user_layout;
-    QLineEdit *search_box;
-    QPushButton *camera_button;
-    QPushButton *display_button; // display???
-    QPushButton *microphone_button;
-    QPushButton *sound_button;
-    QPushButton *hung_up_button;
-    QPushButton *user_label_button;
+    QVBoxLayout *mainLayout;
+    QVBoxLayout *chatsLayout;
+    QHBoxLayout *functionalLayout;
+    QHBoxLayout *userLayout;
+    QLineEdit *searchBox;
+    QPushButton *cameraButton;
+    QPushButton *displayButton; // display???
+    QPushButton *microphoneButton;
+    QPushButton *soundButton;
+    QPushButton *hungUpButton;
+    QPushButton *userLabelButton;
 
 protected:
     void initUI() override;
@@ -110,7 +110,7 @@ public:
     ~WorkSpace();
 
 private:
-    QHBoxLayout *main_layout;
+    QHBoxLayout *mainLayout;
 
 protected:
     void initUI() override;
@@ -121,14 +121,14 @@ class RegisterWindow : public BaseWidget
     Q_OBJECT
 
 private:
-    QVBoxLayout *main_layout;
-    QLabel *app_label;
-    QLineEdit *email_field;
-    QLineEdit *password_field;
-    QLineEdit *username_field;
-    QLineEdit *displayname_field; // for what ??? idk
-    QLineEdit *birthdate_field;
-    QPushButton *register_button;
+    QVBoxLayout *mainLayout;
+    QLabel *appLabel;
+    QLineEdit *emailField;
+    QLineEdit *passwordField;
+    QLineEdit *usernameField;
+    QLineEdit *displayNameField; // for what ??? idk
+    QLineEdit *birthDateField;
+    QPushButton *registerButton;
     QStackedWidget *stackedWidget;
 
 public:
@@ -149,12 +149,12 @@ class LoginWindow : public BaseWidget
     Q_OBJECT
 
 private:
-    QVBoxLayout *main_layout;
-    QLabel *app_label;
-    QLineEdit *login_field;
-    QLineEdit *password_field;
-    QPushButton *login_button;
-    QPushButton *no_account_button;
+    QVBoxLayout *mainLayout;
+    QLabel *appLabel;
+    QLineEdit *loginField;
+    QLineEdit *passwordField;
+    QPushButton *loginButton;
+    QPushButton *noAccountButton;
     QStackedWidget *stackedWidget;
 
 public:
@@ -180,13 +180,13 @@ public:
     ~MainWindow();
 
 private:
-    QWidget *central_widget;
-    QHBoxLayout *main_layout;
-    ServerBar *server_bar;
-    SideBar *side_bar;
+    QWidget *centralWidget;
+    QHBoxLayout *mainLayout;
+    ServerBar *serverBar;
+    SideBar *sideBar;
     WorkSpace *workspace;
-    LoginWindow *login_window;
-    RegisterWindow *register_window;
+    LoginWindow *loginWindow;
+    RegisterWindow *registerWindow;
 
     QStackedWidget *stackedWidget;
 

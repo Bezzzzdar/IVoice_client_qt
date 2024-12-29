@@ -5,19 +5,19 @@ namespace LibCore {
 Server* Server::m_instance = nullptr;
 QMutex Server::mutex;
 
-Server* Server::instance(const QString& server_address, int server_port)
+Server* Server::instance(const QString& serverAddress, int serverPort)
 {
     if (!m_instance)
     {
         QMutexLocker locker(&mutex);
-        m_instance = new Server(server_address, server_port);
+        m_instance = new Server(serverAddress, serverPort);
     }
     return m_instance;
 }
 
-Server::Server(const QString& server_address, int server_port, QObject* parent)
+Server::Server(const QString& serverAddress, int serverPort, QObject* parent)
     : QObject(parent),
-    domen("http://" + server_address + ":" + QString::number(server_port)),
+    domen("http://" + serverAddress + ":" + QString::number(serverPort)),
     networkManager(new QNetworkAccessManager(this))
 {
     this->routes =
@@ -53,8 +53,8 @@ Server::~Server() {
     //delete m_instance;
 }
 
-void Server::authRegister(const QString& user_name, const QString& display_name,
-                          const QString& email, const QString& password, const QString& birth_date)
+void Server::authRegister(const QString& username, const QString& displayName,
+                          const QString& email, const QString& password, const QString& birthDate)
 {
     QUrl url(this->domen + this->routes["auth_register"].second);
 
@@ -62,11 +62,11 @@ void Server::authRegister(const QString& user_name, const QString& display_name,
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
     QJsonObject data;
-    data["user_name"]     = user_name;
-    data["display_name"]  = display_name;
+    data["user_name"]     = username;
+    data["display_name"]  = displayName;
     data["email"]         = email;
     data["password"]      = password;
-    data["birth_date"]    = birth_date;
+    data["birth_date"]    = birthDate;
 
     QJsonDocument jsonDoc(data);
     QByteArray jsonBytes = jsonDoc.toJson();
@@ -76,7 +76,6 @@ void Server::authRegister(const QString& user_name, const QString& display_name,
     QObject::connect(reply, &QNetworkReply::finished, [=]()
     {
         QByteArray responseData = reply->readAll();
-        //qDebug() << responseData;
         QJsonDocument responseJsonDoc = QJsonDocument::fromJson(responseData);
         QJsonObject responseJsonObj = responseJsonDoc.object();
 
@@ -113,7 +112,6 @@ void Server::authLogin(const QString& login, const QString& password)
     QObject::connect(reply, &QNetworkReply::finished, [=]()
     {
         QByteArray responseData = reply->readAll();
-        //qDebug() << responseData;
         QJsonDocument responseJsonDoc = QJsonDocument::fromJson(responseData);
         QJsonObject responseJsonObj = responseJsonDoc.object();
 
