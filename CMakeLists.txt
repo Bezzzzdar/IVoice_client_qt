@@ -36,6 +36,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         resources.qrc
         include/core.h
         src/gui/basewidget.cpp
+        src/gui/settingswidget.cpp
 
     )
 # Define target properties for Android with Qt 6 as:

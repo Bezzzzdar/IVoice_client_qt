@@ -19,6 +19,9 @@
 #include <QStackedWidget>
 #include <QDialog>
 #include <QMessageBox>
+#include <QComboBox>
+#include <QStringList>
+#include <QCheckBox>
 
 #ifndef WIDGETS_H
 #define WIDGETS_H
@@ -46,6 +49,7 @@ public:
     explicit BaseDialog(QWidget *parent = nullptr);
     virtual ~BaseDialog();
     void initialize();
+
 protected:
     virtual void initUI() = 0;
     void paintEvent(QPaintEvent *event);
@@ -74,6 +78,12 @@ private:
     QPushButton *directMessagesButton;
 
     QVector<QPushButton> *serverList;
+
+signals:
+    void showSettingsWidget();
+
+private slots:
+    void onSettingsButtonClicked();
 };
 
 class SideBar : public BaseWidget
@@ -83,6 +93,7 @@ class SideBar : public BaseWidget
 public:
     explicit SideBar(QWidget *parent = nullptr);
     ~SideBar();
+    void setUserLabelButtonText(const QString& text);
 
 private:
     QVBoxLayout *mainLayout;
@@ -171,6 +182,115 @@ private slots:
     void onLoginUnsuccessful(const QString &errorMessage);
 };
 
+class SettingsAccountWidget : public BaseWidget
+{
+    Q_OBJECT
+
+private:
+    QStackedWidget *stackedWidget;
+
+    QVBoxLayout *mainLayout;
+    QHBoxLayout *usernameLayout;
+    QHBoxLayout *displayNameLayout;
+    QHBoxLayout *emailLayout;
+    QHBoxLayout *phoneNumberLayout;
+    QHBoxLayout *birthDateLayout;
+    QHBoxLayout *statusLayout;
+
+    QLabel *mainLabel;
+    QLabel *usernameLabel;
+    QLabel *displayNameLabel;
+    QLabel *emailLabel;
+    QLabel *phoneNumberLabel;
+    QLabel *birthDateLabel;
+    QLabel *statusLabel;
+
+    QLineEdit *usernameField;
+    QLineEdit *displayNameField;
+    QLineEdit *emailField;
+    QLineEdit *phoneNumberField;
+    QLineEdit *birthDateField;
+    QComboBox *statusField;
+
+
+
+protected:
+    void initUI() override;
+
+public:
+    SettingsAccountWidget(QWidget *parent = nullptr, QStackedWidget *stack = nullptr);
+    ~SettingsAccountWidget();
+};
+
+class SettingsAppearanceWidget : public BaseWidget
+{
+    Q_OBJECT
+
+private:
+    QStackedWidget *stackedWidget;
+
+    QVBoxLayout *mainLayout;
+    QHBoxLayout *themeLayout;
+    QHBoxLayout *languageLayout;
+
+    QLabel *mainLabel;
+    QLabel *themeLabel;
+    QLabel *languageLabel;
+
+    QCheckBox *darkThemeCheckBox;
+    QCheckBox *lightThemeCheckBox;
+    QCheckBox *ruLanguageCheckBox;
+    QCheckBox *enLanguageCheckBox;
+
+protected:
+    void initUI() override;
+
+private slots:
+    void onDarkThemeCheckBoxClicked();
+    void onLightThemeCheckBoxClicked();
+    void onRuLanguageCheckBoxClicked();
+    void onEnLanguageCheckBoxClicked();
+
+public:
+    SettingsAppearanceWidget(QWidget *parent = nullptr, QStackedWidget *stack = nullptr);
+    ~SettingsAppearanceWidget();
+};
+
+class SettingsWidget : public BaseWidget
+{
+    Q_OBJECT
+
+private:
+    QStackedWidget *stackedWidget;
+    QHBoxLayout *mainLayout;
+    QVBoxLayout *navigationBarLayout;
+    QWidget *navigationBarContainer;
+    QHBoxLayout *editPanelLayout;
+    QWidget *editPanelContainer;
+    QHBoxLayout *closePanelLayout;
+    QWidget *closePanelContainer;
+    QPushButton *closeSettingsButton;
+    QPushButton *userAccountButton;
+    QPushButton *appearanceButton;
+    SettingsAccountWidget *settingsAccountWidget;
+    SettingsAppearanceWidget *settingsAppearanceWidget;
+
+public:
+    explicit SettingsWidget(QWidget *parent = nullptr, QStackedWidget *stack = nullptr);
+    ~SettingsWidget();
+
+protected:
+    void initUI() override;
+
+private slots:
+    void onUserAccountButtonClicked();
+    void onAppearanceButtonClicked();
+    void onCloseSettingsButtonClicked();
+
+signals:
+    void closeSettings();
+};
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -187,13 +307,15 @@ private:
     WorkSpace *workspace;
     LoginWindow *loginWindow;
     RegisterWindow *registerWindow;
+    SettingsWidget *settingsWidget;
 
-    QStackedWidget *stackedWidget;
+    QStackedWidget *mainStackedWidget;
 
     void initUI();
 
 private slots:
     void switchToMainUI();
+    void switchToSettingsWidget();
 };
 
 #endif // WIDGETS_H

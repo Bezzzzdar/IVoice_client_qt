@@ -72,7 +72,7 @@ void SideBar::initUI()
     this->hungUpButton->setIcon(QIcon(":/resources/images/hung_up.png"));
     this->hungUpButton->setIconSize(QSize(30, 30));
 
-    this->userLabelButton = new QPushButton("Username\nonline", this); /* TODO: fix online status and username */
+    this->userLabelButton = new QPushButton(this);
     this->userLabelButton->setObjectName("UserLabelButton");
     this->userLabelButton->setIcon(QIcon(":/resources/images/default_user.png"));
     this->userLabelButton->setIconSize(QSize(40, 40));
@@ -116,3 +116,7 @@ void SideBar::initUI()
     this->mainLayout->setSpacing(0);
 }
 
+void SideBar::setUserLabelButtonText(const QString& text)
+{
+    this->userLabelButton->setText(text);
+}

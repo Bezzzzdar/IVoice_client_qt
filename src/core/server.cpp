@@ -18,7 +18,8 @@ Server* Server::instance(const QString& serverAddress, int serverPort)
 Server::Server(const QString& serverAddress, int serverPort, QObject* parent)
     : QObject(parent),
     domen("http://" + serverAddress + ":" + QString::number(serverPort)),
-    networkManager(new QNetworkAccessManager(this))
+    networkManager(new QNetworkAccessManager(this)),
+    timer(new QTimer(this))
 {
     this->routes =
     {
@@ -28,7 +29,7 @@ Server::Server(const QString& serverAddress, int serverPort, QObject* parent)
         {"auth_logout",                     qMakePair("POST", "/auth/logout")},
         {"auth_refresh",                    qMakePair("POST", "/auth/refresh")},
 
-        // chats
+        // users
         {"get_current_user",                qMakePair("GET", "/users")},
         {"update_current_user",             qMakePair("PATCH", "/users")},
         {"delete_current_user",             qMakePair("DEL", "/users")},
@@ -46,6 +47,11 @@ Server::Server(const QString& serverAddress, int serverPort, QObject* parent)
         {"delete_friend",                   qMakePair("DEL", "/friends/:userId")}, // userId ???
         {"get_user_friends",                qMakePair("GET", "/friends/:userId")}, // userId ???
     };
+
+    // отправлять запросы только после логина!!!!!!!!!
+    /* Set timer for send authRefresh() every 10 minutes*/
+    QObject::connect(timer, &QTimer::timeout, this, &Server::authRefresh);
+    timer->start(10*60*1000); // 10 minutes in milliseconds
 }
 
 Server::~Server() {
@@ -95,8 +101,10 @@ void Server::authRegister(const QString& username, const QString& displayName,
 
 void Server::authLogin(const QString& login, const QString& password)
 {
-    QUrl url(this->domen + this->routes["auth_login"].second);
+    auto* user = LibCore::User::instance();
+    user->setPassword(password);
 
+    QUrl url(this->domen + this->routes["auth_login"].second);
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
@@ -117,6 +125,11 @@ void Server::authLogin(const QString& login, const QString& password)
 
         if ((reply->error() == QNetworkReply::NoError) && (responseJsonObj["status"].toInt() == 0))
         {
+            QJsonObject tokenJsonObj = responseJsonObj["tokens"].toObject();
+            user->setAccessToken(tokenJsonObj["accessToken"].toString());
+            user->setRefreshToken(tokenJsonObj["refreshToken"].toString());
+
+            this->getCurrentUserInfo();
             emit loginSuccessful();
             qDebug() << "emit loginSuccessful";
         }
@@ -134,10 +147,78 @@ void Server::authLogin(const QString& login, const QString& password)
 
 // }
 
-// void Server::authRefresh()
-// {
+void Server::authRefresh()
+{
+    auto* user = LibCore::User::instance();
 
-// }
+    QUrl url(this->domen + this->routes["auth_refresh"].second);
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject data;
+    data["refreshToken"] = user->getRefreshToken();
+
+    QJsonDocument jsonDoc(data);
+    QByteArray jsonBytes = jsonDoc.toJson();
+
+    QNetworkReply *reply = networkManager->sendCustomRequest(request, this->routes["auth_refresh"].first.toUtf8(), jsonBytes);
+
+    QObject::connect(reply, &QNetworkReply::finished, [=]()
+    {
+        QByteArray responseData = reply->readAll();
+        QJsonDocument responseJsonDoc = QJsonDocument::fromJson(responseData);
+        QJsonObject responseJsonObj = responseJsonDoc.object();
+
+        if ((reply->error() == QNetworkReply::NoError) && (responseJsonObj["status"].toInt() == 0))
+        {
+            QJsonObject tokenJsonObj = responseJsonObj["tokens"].toObject();
+            user->setAccessToken(tokenJsonObj["accessToken"].toString());
+            user->setRefreshToken(tokenJsonObj["refreshToken"].toString());
+            qDebug() << "authRefresh sucsessful";
+        }
+        else if ((reply->error() != QNetworkReply::NoError) && (responseJsonObj["status"].toInt() != 0))
+        {
+            qDebug() << "authRefresh unsucsessful";
+        }
+        reply->deleteLater();
+    });
+}
+
+void Server::getCurrentUserInfo()
+{
+    auto* user = LibCore::User::instance();
+
+    QUrl url(this->domen + this->routes["get_current_user"].second);
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setRawHeader("Authorization", "Bearer " + user->getAccessToken().toUtf8());
+    QNetworkReply *reply = networkManager->sendCustomRequest(request, this->routes["get_current_user"].first.toUtf8());
+
+    QObject::connect(reply, &QNetworkReply::finished, [=]()
+    {
+        QByteArray responseData = reply->readAll();
+        //qDebug() << responseData;
+        QJsonDocument responseJsonDoc = QJsonDocument::fromJson(responseData);
+        QJsonObject responseJsonObj = responseJsonDoc.object();
+
+        if ((reply->error() == QNetworkReply::NoError) && (responseJsonObj["status"].toInt() == 0))
+        {
+            QJsonObject dataJsonObj = responseJsonObj["data"].toObject();
+
+            user->setUserID(dataJsonObj["user_id"].toInt());
+            user->setUsername(dataJsonObj["user_name"].toString());
+            user->setDisplayName(dataJsonObj["display_name"].toString());
+            user->setEmail(dataJsonObj["email"].toString());
+            user->setBirthDate(dataJsonObj["birth_date"].toString());
+            user->setPhoneNumber(dataJsonObj["phone_number"].toString());
+        }
+        else if ((reply->error() != QNetworkReply::NoError) && (responseJsonObj["status"].toInt() != 0))
+        {
+            qDebug() << "getCurrentUserInfo unsucsessful";
+        }
+    });
+}
+
 
 } // namespace LibCore
 
