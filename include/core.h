@@ -11,6 +11,7 @@
 #include <QMutexLocker>
 #include <QDate>
 #include <QSettings>
+#include <QTimer>
 
 #ifndef CORE_H
 #define CORE_H
@@ -31,21 +32,24 @@ class LIBCORE_API Server : public QObject
 public:
     static Server* instance(const QString& serverAddress = "", int serverPort = 0);
 
-    Server(const Server&) = delete;
-    Server& operator = (const Server&) = delete;
-    Server(Server&&) = delete;
-    Server& operator = (Server&&) = delete;
-
     void authRegister(const QString& username, const QString& displayName,
                       const QString& email, const QString& password,
                       const QString& birthDate);
     void authLogin(const QString& login, const QString& password);
     // Q_INVOKABLE void authLogout();
-    // Q_INVOKABLE void authRefresh();
+    void getCurrentUserInfo();
     ~Server();
+
+private slots:
+    void authRefresh();
 
 private:
     explicit Server(const QString& serverAddress, int serverPort, QObject* parent = nullptr);
+
+    Server(const Server&) = delete;
+    Server& operator = (const Server&) = delete;
+    Server(Server&&) = delete;
+    Server& operator = (Server&&) = delete;
 
     static Server* m_instance;
     static QMutex mutex;
@@ -53,6 +57,7 @@ private:
     QString domen;
     QNetworkAccessManager* networkManager;
     QHash<QString, QPair<QString, QString>> routes;
+    QTimer* timer;
 
 signals:
     void registerSucsessful();
@@ -60,7 +65,6 @@ signals:
     void loginSuccessful();
     void loginUnsucsessful(const QString &errorMessage);
 };
-
 
 class LIBCORE_API User : public QObject
 {
@@ -79,34 +83,40 @@ private:
 
     QString accessToken;
     QString refreshToken;
+    int userID;
     QString username;
     QString displayName;
     QString email;
     QString phoneNumber;
     QString password;
-    QDate birthDate;
+    QString birthDate;
+    QString status; // online/offline
 
 public:
     static User* instance(QObject* parent = nullptr);
-    virtual ~User();
+    ~User();
 
     void setAccessToken(const QString& accessToken);
     void setRefreshToken(const QString& refreshToken);
+    void setUserID(int userID);
     void setUsername(const QString& username);
     void setDisplayName(const QString& displayName);
     void setEmail(const QString& email);
     void setPhoneNumber(const QString& phoneNumber);
     void setPassword(const QString& password);
-    void setBirthDate(QDate birthDate);
+    void setBirthDate(const QString& birthDate);
+    void setStatus(const QString& status);
 
     QString getAccessToken();
     QString getRefreshToken();
+    int getUserID();
     QString getUsername();
     QString getDisplayName();
     QString getEmail();
     QString getPhoneNumber();
     QString getPassword();
-    QDate getBirthDate();
+    QString getBirthDate();
+    QString getStatus();
 };
 
 class LIBCORE_API Settings  : public QSettings
@@ -118,7 +128,7 @@ public:
 
     QVariant getSetting(const QString& key);
     void setSetting(const QString& key, const QVariant& value);
-    virtual ~Settings();
+    ~Settings();
 
     Settings(const Settings&) = delete;
     Settings& operator=(const Settings&) = delete;

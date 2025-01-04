@@ -116,3 +116,98 @@
 #LoginButton:pressed {
     background-color: #d9d9d9;
 }
+
+#SettingsAccountWidget {
+    background-color: #d9d9d9;
+}
+
+#SettingsAppearanceWidget {
+    background-color: #d9d9d9;
+}
+
+#SettingsNavigationBarButton {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 15px;
+    padding: 10px;
+}
+#SettingsNavigationBarButton:hover {
+    background-color: #808080;
+}
+#SettingsNavigationBarButton:pressed {
+    background-color: #d9d9d9;
+}
+
+#SettingsWidgetField{
+    background-color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+#NavigationBar {
+    background-color: #808080;
+}
+
+#EditPanel {
+    background-color: #d9d9d9;
+}
+
+#MainLabel {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-weight: bold;
+    color: black;
+    font-size: 24px;
+}
+
+#SettingsWidgetStatusComboBox {
+    background-color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 15px;
+    padding: 10px;
+    color: black;
+}
+#SettingsWidgetStatusComboBox::drop-down {
+    border: none;
+    width: 0px;
+}
+#SettingsWidgetStatusComboBox::down-arrow {
+    width: 0px;
+    height: 0px;
+}
+#SettingsWidgetStatusComboBox QAbstractItemView {
+    background-color: white;
+    border: 2px solid #ffffff;
+    border-radius: 15px;
+}
+
+#SettingsCheckBox {
+    spacing: 10px;
+    padding: 5px;
+    border: 2px solid #d9d9d9;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: black;
+}
+#SettingsCheckBox::indicator {
+    width: 15px;
+    height: 15px;
+    border: 2px solid #d9d9d9;
+    background-color: #ffffff;
+}
+#SettingsCheckBox::indicator:checked {
+    background-color: #808080;
+    border: 2px solid #d9d9d9;
+}
+#SettingsCheckBox::indicator:unchecked {
+    background-color: #ffffff;
+    border: 2px solid #d9d9d9;
+}
+#SettingsCheckBox::indicator:hover {
+    border: 2px solid #808080;
+}
+#SettingsCheckBox:disabled {
+    color: #d9d9d9;
+    background-color: #ffffff;
+    border: 2px solid #d9d9d9;
+}

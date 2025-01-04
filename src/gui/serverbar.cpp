@@ -48,6 +48,7 @@ void ServerBar::initUI()
     this->settingsButton->setObjectName("ServerBarButton");
     this->settingsButton->setIcon(QIcon(":/resources/images/settings_white.png"));
     this->settingsButton->setIconSize(QSize(40, 40));
+    connect(this->settingsButton, &QPushButton::clicked, this, &ServerBar::onSettingsButtonClicked);
 
     this->directMessagesButton = new QPushButton(this);
     this->directMessagesButton->setObjectName("ServerBarButton");
@@ -75,5 +76,10 @@ void ServerBar::initUI()
 
     this->mainLayout->setContentsMargins(0,0,0,0);
     this->mainLayout->setSpacing(0);
+}
+
+void ServerBar::onSettingsButtonClicked()
+{
+    emit this->showSettingsWidget();
 }
 

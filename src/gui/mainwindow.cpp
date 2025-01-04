@@ -11,49 +11,67 @@ MainWindow::MainWindow(QWidget *parent)
     connect(server, SIGNAL(loginSuccessful()), this, SLOT(switchToMainUI()));
 }
 
-MainWindow::~MainWindow()
-{
-    delete mainLayout;
-}
+MainWindow::~MainWindow() {}
 
 void MainWindow::initUI()
 {
     this->resize(1400, 900);
     this->setMinimumSize(900, 600);
 
-    this->centralWidget = new QWidget(this);
-    this->mainLayout = new QHBoxLayout();
-    centralWidget->setLayout(mainLayout);
-    mainLayout->setContentsMargins(0,0,0,0);
-    mainLayout->setSpacing(0);
+    this->mainStackedWidget = new QStackedWidget(this);
 
-    this->stackedWidget = new QStackedWidget(this);
+    QWidget* loginContainer = new QWidget(this);
+    QVBoxLayout* loginLayout = new QVBoxLayout(loginContainer);
+    this->loginWindow = new LoginWindow(this, mainStackedWidget);
+    loginLayout->addWidget(loginWindow, 0, Qt::AlignCenter);
+    loginContainer->setLayout(loginLayout);
 
-    this->loginWindow = new LoginWindow(this, this->stackedWidget);
-    this->registerWindow = new RegisterWindow(this, this->stackedWidget);
+    QWidget* registerContainer = new QWidget(this);
+    QVBoxLayout* registerLayout = new QVBoxLayout(registerContainer);
+    this->registerWindow = new RegisterWindow(this, mainStackedWidget);
+    registerLayout->addWidget(registerWindow, 0, Qt::AlignCenter);
+    registerContainer->setLayout(registerLayout);
 
-    this->stackedWidget->addWidget(loginWindow);
-    this->stackedWidget->addWidget(registerWindow);
-    this->stackedWidget->setCurrentWidget(loginWindow);
+    this->mainStackedWidget->addWidget(loginContainer);
+    this->mainStackedWidget->addWidget(registerContainer);
 
-    mainLayout->addWidget(this->stackedWidget, 0, Qt::AlignCenter);
-    setCentralWidget(centralWidget);
+    this->mainStackedWidget->setCurrentWidget(loginContainer);
+
+    setCentralWidget(mainStackedWidget);
 }
 
 void MainWindow::switchToMainUI()
 {
-    if (this->stackedWidget)
-    {
-        this->stackedWidget->hide();
-        this->stackedWidget->deleteLater();
-        this->stackedWidget = nullptr;
+    if (!this->centralWidget) {
+        this->centralWidget = new QWidget(this);
+        QHBoxLayout* mainLayout = new QHBoxLayout(centralWidget);
+        mainLayout->setContentsMargins(0, 0, 0, 0);
+        mainLayout->setSpacing(0);
+
+        this->serverBar = new ServerBar(this);
+        this->sideBar = new SideBar(this);
+        this->workspace = new WorkSpace(this);
+
+        mainLayout->addWidget(this->serverBar);
+        mainLayout->addWidget(this->sideBar);
+        mainLayout->addWidget(this->workspace);
+
+        this->mainStackedWidget->addWidget(centralWidget);
+
+        this->settingsWidget = new SettingsWidget(this, mainStackedWidget);
+        this->mainStackedWidget->addWidget(settingsWidget);
+
+        connect(this->serverBar, &ServerBar::showSettingsWidget, this, &MainWindow::switchToSettingsWidget);
+        connect(this->settingsWidget, &SettingsWidget::closeSettings, this, &MainWindow::switchToMainUI);
     }
 
-    this->serverBar = new ServerBar(this);
-    this->sideBar = new SideBar(this);
-    this->workspace = new WorkSpace(this);
+    this->mainStackedWidget->setCurrentWidget(this->centralWidget);
 
-    mainLayout->addWidget(serverBar);
-    mainLayout->addWidget(sideBar);
-    mainLayout->addWidget(workspace);
+    auto* user = LibCore::User::instance();
+    this->sideBar->setUserLabelButtonText(user->getUsername() + "\nonline");
+}
+
+void MainWindow::switchToSettingsWidget()
+{
+    this->mainStackedWidget->setCurrentWidget(this->settingsWidget);
 }

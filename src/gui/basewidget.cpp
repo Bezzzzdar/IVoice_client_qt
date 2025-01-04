@@ -31,17 +31,17 @@ void BaseWidget::applyStyles()
     }
 }
 
+void BaseWidget::initialize()
+{
+    this->initUI();
+    this->applyStyles();
+}
 
 /**************************************************
  *
  *      Abstract class for any dialog in app
  *
  *************************************************/
-void BaseWidget::initialize()
-{
-    this->initUI();
-    this->applyStyles();
-}
 
 BaseDialog::BaseDialog(QWidget *parent)
     : QDialog(parent) {}
