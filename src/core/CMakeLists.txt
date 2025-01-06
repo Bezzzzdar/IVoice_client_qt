@@ -7,14 +7,13 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/include)
+file(GLOB LIBCORE_SOURCES . *.cpp)
 
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Network)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
 add_library(core SHARED
-    server.cpp
-    user.cpp
-    settings.cpp
+    ${LIBCORE_SOURCES}
     ${CMAKE_SOURCE_DIR}/include/core.h
 )
 target_compile_definitions(core PRIVATE LIBCORE_EXPORTS)
