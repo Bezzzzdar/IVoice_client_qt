@@ -1,4 +1,4 @@
-#include "include/widgets.h"
+#include "basewidget.h"
 
 /**************************************************
  *

@@ -1,5 +1,5 @@
-#include "include/widgets.h"
-#include "include/core.h"
+#include "registerwindow.h"
+#include "core.h"
 
 RegisterWindow::RegisterWindow(QWidget *parent, QStackedWidget *stack)
     : BaseWidget(parent), stackedWidget(stack)

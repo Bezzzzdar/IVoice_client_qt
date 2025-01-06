@@ -1,4 +1,4 @@
-#include "include/widgets.h"
+#include "serverbar.h"
 
 ServerBar::ServerBar(QWidget *parent)
     : BaseWidget(parent)

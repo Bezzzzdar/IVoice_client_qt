@@ -1,5 +1,5 @@
-#include "include/widgets.h"
-#include "include/core.h"
+#include "mainwindow.h"
+#include "core.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,6 +17,7 @@ void MainWindow::initUI()
 {
     this->resize(1400, 900);
     this->setMinimumSize(900, 600);
+    this->centralWidget = nullptr;
 
     this->mainStackedWidget = new QStackedWidget(this);
 
