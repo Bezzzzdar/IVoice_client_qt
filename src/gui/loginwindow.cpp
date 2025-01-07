@@ -1,5 +1,5 @@
-#include "include/widgets.h"
-#include "include/core.h"
+#include "loginwindow.h"
+#include "core.h"
 
 LoginWindow::LoginWindow(QWidget *parent, QStackedWidget *stack)
     : BaseWidget(parent), stackedWidget(stack)

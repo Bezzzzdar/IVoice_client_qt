@@ -1,5 +1,5 @@
-#include "include/widgets.h"
-#include "include/core.h"
+#include "mainwindow.h"
+#include "core.h"
 
 #include <QApplication>
 

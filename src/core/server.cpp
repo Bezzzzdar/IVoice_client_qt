@@ -1,4 +1,4 @@
-#include "include/core.h"
+#include "core.h"
 
 namespace LibCore {
 
@@ -211,6 +211,7 @@ void Server::getCurrentUserInfo()
             user->setEmail(dataJsonObj["email"].toString());
             user->setBirthDate(dataJsonObj["birth_date"].toString());
             user->setPhoneNumber(dataJsonObj["phone_number"].toString());
+            // тут ещё надо status
         }
         else if ((reply->error() != QNetworkReply::NoError) && (responseJsonObj["status"].toInt() != 0))
         {

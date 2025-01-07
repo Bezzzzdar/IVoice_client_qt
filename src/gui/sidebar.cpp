@@ -1,4 +1,4 @@
-#include "include/widgets.h"
+#include "sidebar.h"
 
 SideBar::SideBar(QWidget *parent)
     :  BaseWidget(parent)

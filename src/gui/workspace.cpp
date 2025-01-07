@@ -1,4 +1,4 @@
-#include "include/widgets.h"
+#include "workspace.h"
 
 WorkSpace::WorkSpace(QWidget *parent)
     : BaseWidget(parent)
