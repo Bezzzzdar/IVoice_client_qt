@@ -101,7 +101,7 @@ void LoginWindow::onLoginSuccessful()
 {
     QMessageBox::information(this, "Login", "Login was successful!");
 
-    qDebug() << "call onLoginSuccessful";
+    LOG(Info) << "call onLoginSuccessful\n";
 
     this->loginField->clear();
     this->passwordField->clear();
@@ -111,7 +111,7 @@ void LoginWindow::onLoginUnsuccessful(const QString &errorMessage)
 {
     QMessageBox::critical(this, "Login", "Login was unsuccessful!\n" + errorMessage);
 
-    qDebug() << "call onLoginUnsuccessful";
+    LOG(Info) << "call onLoginUnsuccessful\n";
 
     this->loginField->clear();
     this->passwordField->clear();

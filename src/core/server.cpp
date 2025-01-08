@@ -7,7 +7,7 @@ QMutex Server::mutex;
 
 Server* Server::instance(const QString& serverAddress, int serverPort)
 {
-    if (!m_instance)
+    if (m_instance == nullptr)
     {
         QMutexLocker locker(&mutex);
         m_instance = new Server(serverAddress, serverPort);
@@ -26,11 +26,11 @@ Server::Server(const QString& serverAddress, int serverPort, QObject* parent)
         // auth
         {"auth_register",                   qMakePair("POST", "/auth/register")},
         {"auth_login",                      qMakePair("POST", "/auth/login")},
-        {"auth_logout",                     qMakePair("POST", "/auth/logout")},
-        {"auth_refresh",                    qMakePair("POST", "/auth/refresh")},
+        {"auth_logout",                     qMakePair("POST", "/token/logout")},
+        {"auth_refresh",                    qMakePair("POST", "/token/refresh")},
 
         // users
-        {"get_current_user",                qMakePair("GET", "/users")},
+        {"get_current_user",                qMakePair("GET", "/users/me")},
         {"update_current_user",             qMakePair("PATCH", "/users")},
         {"delete_current_user",             qMakePair("DEL", "/users")},
         {"get_current_user_details",        qMakePair("GET", "/users/details")},
@@ -56,7 +56,8 @@ Server::Server(const QString& serverAddress, int serverPort, QObject* parent)
 
 Server::~Server() {
     delete networkManager;
-    //delete m_instance;
+    delete m_instance;
+    m_instance = nullptr;
 }
 
 void Server::authRegister(const QString& username, const QString& displayName,
@@ -88,12 +89,12 @@ void Server::authRegister(const QString& username, const QString& displayName,
         if ((reply->error() == QNetworkReply::NoError) && (responseJsonObj["status"].toInt() == 0))
         {
             emit registerSucsessful();
-            qDebug() << "emit registerSucsessful";
+            LOG(Info) << "Register user " << username << " sucsessful\n";
         }
         else if ((reply->error() != QNetworkReply::NoError) && (responseJsonObj["status"].toInt() != 0))
         {
             emit registerUnsucsessful(responseJsonObj["error"].toString());
-            qDebug() << "emit registerUnsucsessful";
+            LOG(Warning) << "Register user " << username << " unsucsessful. " << "Error: " << responseJsonObj["error"].toString() << "\n";
         }
         reply->deleteLater();
     });
@@ -131,12 +132,12 @@ void Server::authLogin(const QString& login, const QString& password)
 
             this->getCurrentUserInfo();
             emit loginSuccessful();
-            qDebug() << "emit loginSuccessful";
+            LOG(Info) << "Login user " << login << " sucsessful\n";
         }
         else if ((reply->error() != QNetworkReply::NoError) && (responseJsonObj["status"].toInt() != 0))
         {
             emit loginUnsucsessful(responseJsonObj["error"].toString());
-            qDebug() << "emit loginUnsucsessful";
+            LOG(Warning) << "Login user " << login << " unsucsessful. " << "Error: " << responseJsonObj["error"].toString() << "\n";
         }
         reply->deleteLater();
     });
@@ -174,11 +175,11 @@ void Server::authRefresh()
             QJsonObject tokenJsonObj = responseJsonObj["tokens"].toObject();
             user->setAccessToken(tokenJsonObj["accessToken"].toString());
             user->setRefreshToken(tokenJsonObj["refreshToken"].toString());
-            qDebug() << "authRefresh sucsessful";
+            LOG(Info) << "Refresh token sucsessful\n";
         }
         else if ((reply->error() != QNetworkReply::NoError) && (responseJsonObj["status"].toInt() != 0))
         {
-            qDebug() << "authRefresh unsucsessful";
+            LOG(Critical) << "Refresh token unsucsessful\n";
         }
         reply->deleteLater();
     });
@@ -197,7 +198,7 @@ void Server::getCurrentUserInfo()
     QObject::connect(reply, &QNetworkReply::finished, [=]()
     {
         QByteArray responseData = reply->readAll();
-        //qDebug() << responseData;
+        qDebug() << responseData;
         QJsonDocument responseJsonDoc = QJsonDocument::fromJson(responseData);
         QJsonObject responseJsonObj = responseJsonDoc.object();
 
@@ -212,10 +213,12 @@ void Server::getCurrentUserInfo()
             user->setBirthDate(dataJsonObj["birth_date"].toString());
             user->setPhoneNumber(dataJsonObj["phone_number"].toString());
             // тут ещё надо status
+
+            LOG(Info) << "Get current user info sucsessful\n";
         }
         else if ((reply->error() != QNetworkReply::NoError) && (responseJsonObj["status"].toInt() != 0))
         {
-            qDebug() << "getCurrentUserInfo unsucsessful";
+            LOG(Critical) << "Get current user info unsucsessful\n";
         }
     });
 }

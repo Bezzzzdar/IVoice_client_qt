@@ -7,6 +7,7 @@ var hierarchy =
       [ "MainWindow", "class_main_window.html", null ]
     ] ],
     [ "QObject", null, [
+      [ "LibCore::Logger", "class_lib_core_1_1_logger.html", null ],
       [ "LibCore::Server", "class_lib_core_1_1_server.html", null ],
       [ "LibCore::User", "class_lib_core_1_1_user.html", null ]
     ] ],

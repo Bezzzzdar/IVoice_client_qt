@@ -21,6 +21,11 @@
 #include <QDate>
 #include <QSettings>
 #include <QTimer>
+#include <QFile>
+#include <QTextStream>
+#include <QDateTime>
+#include <QFileInfo>
+#include <QDir>
 
 /*!
  * @def LIBCORE_API
@@ -35,6 +40,31 @@
 #else
 #  define LIBCORE_API Q_DECL_IMPORT
 #endif
+
+
+/*!
+ * @def LOG()
+ * @brief Macro for logging messages with automatic context information.
+ *
+ * This macro simplifies the process of logging by automatically including
+ * the log level, file name, line number, and function name in the log message.
+ *
+ * Usage example:
+ * @code
+ * LOG(Info) << "Application started";
+ * LOG(Error) << "An error occurred";
+ * @endcode
+ *
+ * The resulting log message format:
+ * @code
+ * [2025-01-08 14:24:40] [INFO] /path/to/file.cpp:42 (functionName) - Your log message
+ * @endcode
+ *
+ * @param level The log level, one of the @ref LibCore::Logger::logLevel values (e.g., Debug, Info, Warning, Error, Critical).
+ *
+ * @see LibCore::Logger
+ */
+#define LOG(level) (*LibCore::Logger::instance()) << LibCore::Logger::level << __FILE__ << ":" << __LINE__ << ":" << " (" << Q_FUNC_INFO << ") - "
 
 namespace LibCore
 {
@@ -52,6 +82,11 @@ class LIBCORE_API Server : public QObject
     Q_OBJECT
 
 public:
+
+    Server(const Server&) = delete;
+    Server& operator = (const Server&) = delete;
+    Server(Server&&) = delete;
+    Server& operator = (Server&&) = delete;
 
     /*!
      * @brief Retrieves the single instance of the class.
@@ -93,11 +128,6 @@ public:
 
 private:
     explicit Server(const QString& serverAddress, int serverPort, QObject* parent = nullptr);
-
-    Server(const Server&) = delete;
-    Server& operator = (const Server&) = delete;
-    Server(Server&&) = delete;
-    Server& operator = (Server&&) = delete;
 
     static Server* m_instance;                              ///< The single instance of the class.
     static QMutex mutex;                                    ///< Mutex for thread safety.
@@ -155,6 +185,11 @@ class LIBCORE_API User : public QObject
     Q_OBJECT
 
 public:
+
+    User(const User&) = delete;
+    User& operator = (const User&) = delete;
+    User(User&&) = delete;
+    User& operator = (User&&) = delete;
 
     /*!
      * @brief Retrieves the single instance of the class.
@@ -292,11 +327,6 @@ public:
 private:
     explicit User(QObject* parent = nullptr);
 
-    User(const User&) = delete;
-    User& operator = (const User&) = delete;
-    User(User&&) = delete;
-    User& operator = (User&&) = delete;
-
     static User* m_instance;            ///< The single instance of the class.
     static QMutex mutex;                ///< Mutex for thread safety.
 
@@ -325,6 +355,12 @@ class LIBCORE_API Settings  : public QSettings
     Q_OBJECT
 
 public:
+
+    Settings(const Settings&) = delete;
+    Settings& operator=(const Settings&) = delete;
+    Settings(Settings&&) = delete;
+    Settings& operator=(Settings&&) = delete;
+
     /*!
      * @brief Retrieves the single instance of the class.
      * @return The instance of the class.
@@ -352,10 +388,6 @@ public:
 
 private:
     explicit Settings();
-    Settings(const Settings&) = delete;
-    Settings& operator=(const Settings&) = delete;
-    Settings(Settings&&) = delete;
-    Settings& operator=(Settings&&) = delete;
 
     const QString configFilePath;           ///< The path to the configuration file.
 
@@ -363,7 +395,129 @@ private:
     static QMutex mutex;                    ///< Mutex for thread safety.
 };
 
+
+/**
+ * @class Logger
+ * @brief A singleton class for logging messages to a file.
+ *
+ * The Logger class provides functionality for writing log messages to a file.
+ * It supports multiple log levels and ensures thread safety using a mutex.
+ * The class is designed as a singleton to ensure only one instance manages logging.
+ *
+ */
+class LIBCORE_API Logger : public QObject
+{
+    Q_OBJECT
+
+public:
+
+    /*!
+     * @enum logLevel
+     * @brief Represents the different levels of logging.
+     *
+     * The log levels indicate the severity or type of the log message.
+     * - Debug: Detailed debugging information.
+     * - Info: General informational messages.
+     * - Warning: Indications of potential issues.
+     * - Error: Error messages indicating failures.
+     * - Critical: Critical errors requiring immediate attention.
+     */
+    enum logLevel
+    {
+        Debug,
+        Info,
+        Warning,
+        Error,
+        Critical
+    };
+
+    /*!
+     * @brief Retrieves the single instance of the class.
+     * @return The instance of the class.
+     */
+    static Logger* instance();
+
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
+    Logger(Logger&&) = delete;
+    Logger& operator=(Logger&&) = delete;
+
+    /*!
+     * @brief Sets the log file path.
+     *
+     * If the file already exists, it will be cleared. If necessary, intermediate
+     * directories in the path will be created automatically.
+     *
+     * @param logFilePath The file path where log messages will be written.
+     */
+    void setLogFile(const QString& logFilePath);
+
+    Logger& operator<<(logLevel level)
+    {
+        QMutexLocker locker(&mutex);
+
+        this->buffer = QString("[%1] [%2] ")
+                           .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"))
+                           .arg(logLevelToString(level));
+        return *this;
+    }
+
+    Logger& operator<<(const QString& message)
+    {
+        QMutexLocker locker(&mutex);
+
+        this->buffer += message;
+        this->flush();
+        return *this;
+    }
+
+    Logger& operator<<(const char* message)
+    {
+        return *this << QString(message);
+    }
+
+    Logger& operator<<(int value)
+    {
+        return *this << QString::number(value);
+    }
+
+    Logger& operator<<(double value)
+    {
+        return *this << QString::number(value);
+    }
+
+    /*!
+     * @brief Class destructor.
+     *
+     * Closes the log file if it is open.
+     */
+    ~Logger();
+
+private:
+    explicit Logger();
+
+    /*!
+     * @brief Flushes the current log message to the file.
+     *
+     * Writes the current buffer to the log file and clears the buffer.
+     */
+    void flush();
+
+    /*!
+     * @brief Converts a log level enum value to its string representation.
+     *
+     * @param level The log level to convert.
+     * @return A QString representing the log level.
+     */
+    QString logLevelToString(logLevel level) const;
+
+    static Logger* m_instance;              ///< The single instance of the class.
+    static QMutex mutex;                    ///< Mutex for thread safety.
+
+    QFile logFile;                          ///< The file where log messages are written.
+    QString buffer;                         ///< Buffer for the current log message.
+
+};
+
 }   // namespace LibCore
-
-
 #endif // CORE_H

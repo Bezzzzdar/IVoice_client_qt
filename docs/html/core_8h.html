@@ -125,6 +125,11 @@ $(function(){initNavTree('core_8h.html',''); initResizable(true); });
 <code>#include &lt;QDate&gt;</code><br />
 <code>#include &lt;QSettings&gt;</code><br />
 <code>#include &lt;QTimer&gt;</code><br />
+<code>#include &lt;QFile&gt;</code><br />
+<code>#include &lt;QTextStream&gt;</code><br />
+<code>#include &lt;QDateTime&gt;</code><br />
+<code>#include &lt;QFileInfo&gt;</code><br />
+<code>#include &lt;QDir&gt;</code><br />
 </div>
 <p><a href="core_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -139,12 +144,18 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lib_core_1_1_settings.html">LibCore::Settings</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manages user and application settings.  <a href="class_lib_core_1_1_settings.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lib_core_1_1_logger.html">LibCore::Logger</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A singleton class for logging messages to a file.  <a href="class_lib_core_1_1_logger.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:ad4a86448f7231315ab29e08a780024ca" id="r_ad4a86448f7231315ab29e08a780024ca"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad4a86448f7231315ab29e08a780024ca">LIBCORE_API</a>&#160;&#160;&#160;Q_DECL_IMPORT</td></tr>
 <tr class="memdesc:ad4a86448f7231315ab29e08a780024ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro for exporting/importing library symbols.  <br /></td></tr>
 <tr class="separator:ad4a86448f7231315ab29e08a780024ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba7b09d6e8fbe414c23705ad24dde6ff" id="r_aba7b09d6e8fbe414c23705ad24dde6ff"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aba7b09d6e8fbe414c23705ad24dde6ff">LOG</a>(level)</td></tr>
+<tr class="memdesc:aba7b09d6e8fbe414c23705ad24dde6ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro for logging messages with automatic context information.  <br /></td></tr>
+<tr class="separator:aba7b09d6e8fbe414c23705ad24dde6ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Contains the definitions of core functions. </p>
@@ -167,6 +178,39 @@ Macros</h2></td></tr>
 <li>If <code>LIBCORE_EXPORTS</code> is defined, symbols are exported (<code>Q_DECL_EXPORT</code>).</li>
 <li>Otherwise, symbols are imported (<code>Q_DECL_IMPORT</code>). </li>
 </ul>
+
+</div>
+</div>
+<a id="aba7b09d6e8fbe414c23705ad24dde6ff" name="aba7b09d6e8fbe414c23705ad24dde6ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba7b09d6e8fbe414c23705ad24dde6ff">&#9670;&#160;</a></span>LOG</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>level</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">(*<a class="code hl_function" href="class_lib_core_1_1_logger.html#a9d228a04db290251ac0e44130797d6c6">LibCore::Logger::instance</a>()) &lt;&lt; LibCore::Logger::level &lt;&lt; __FILE__ &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; <span class="stringliteral">&quot; (&quot;</span> &lt;&lt; Q_FUNC_INFO &lt;&lt; <span class="stringliteral">&quot;) - &quot;</span></div>
+<div class="ttc" id="aclass_lib_core_1_1_logger_html_a9d228a04db290251ac0e44130797d6c6"><div class="ttname"><a href="class_lib_core_1_1_logger.html#a9d228a04db290251ac0e44130797d6c6">LibCore::Logger::instance</a></div><div class="ttdeci">static Logger * instance()</div><div class="ttdoc">Retrieves the single instance of the class.</div></div>
+</div><!-- fragment -->
+<p>Macro for logging messages with automatic context information. </p>
+<p>This macro simplifies the process of logging by automatically including the log level, file name, line number, and function name in the log message.</p>
+<p>Usage example: </p><div class="fragment"><div class="line"><a class="code hl_define" href="#aba7b09d6e8fbe414c23705ad24dde6ff">LOG</a>(Info) &lt;&lt; <span class="stringliteral">&quot;Application started&quot;</span>;</div>
+<div class="line"><a class="code hl_define" href="#aba7b09d6e8fbe414c23705ad24dde6ff">LOG</a>(Error) &lt;&lt; <span class="stringliteral">&quot;An error occurred&quot;</span>;</div>
+<div class="ttc" id="acore_8h_html_aba7b09d6e8fbe414c23705ad24dde6ff"><div class="ttname"><a href="#aba7b09d6e8fbe414c23705ad24dde6ff">LOG</a></div><div class="ttdeci">#define LOG(level)</div><div class="ttdoc">Macro for logging messages with automatic context information.</div><div class="ttdef"><b>Definition</b> core.h:67</div></div>
+</div><!-- fragment --><p>The resulting log message format: </p><div class="fragment"><div class="line">[2025-01-08 14:24:40] [INFO] /path/to/file.cpp:42 (functionName) - Your log message</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">level</td><td>The log level, one of the <a class="el" href="class_lib_core_1_1_logger.html#a35302198c7a3c01946ccc80d44cd9336">LibCore::Logger::logLevel</a> values (e.g., Debug, Info, Warning, Error, Critical).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_lib_core_1_1_logger.html" title="A singleton class for logging messages to a file.">LibCore::Logger</a> </dd></dl>
 
 </div>
 </div>
