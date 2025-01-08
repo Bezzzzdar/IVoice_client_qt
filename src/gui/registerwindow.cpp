@@ -117,7 +117,7 @@ void RegisterWindow::onRegisterSucsessful()
 {
     QMessageBox::information(this, "Registration", "Registration was successful!");
 
-    qDebug() << "call onRegisterSucsessful";
+    LOG(Info) << "call onRegisterSucsessful\n";
 
     stackedWidget->setCurrentIndex(0);
     this->emailField->clear();
@@ -131,7 +131,7 @@ void RegisterWindow::onRegisterUnsucsessful(const QString &errorMessage)
 {
     QMessageBox::critical(this, "Registration", "Registration was unsuccessful!\n" + errorMessage);
 
-    qDebug() << "call onRegisterUnsucsessful";
+    LOG(Info) << "call onRegisterUnsucsessful\n";
 
     this->emailField->clear();
     this->passwordField->clear();
