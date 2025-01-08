@@ -1,6 +1,7 @@
 var annotated_dup =
 [
     [ "LibCore", null, [
+      [ "Logger", "class_lib_core_1_1_logger.html", "class_lib_core_1_1_logger" ],
       [ "Server", "class_lib_core_1_1_server.html", "class_lib_core_1_1_server" ],
       [ "Settings", "class_lib_core_1_1_settings.html", "class_lib_core_1_1_settings" ],
       [ "User", "class_lib_core_1_1_user.html", "class_lib_core_1_1_user" ]
