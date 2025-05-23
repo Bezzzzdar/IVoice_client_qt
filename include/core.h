@@ -26,21 +26,19 @@
 #include <QDateTime>
 #include <QFileInfo>
 #include <QDir>
+#include <QUrl>
 
-/*!
- * @def LIBCORE_API
- * @brief Macro for exporting/importing library symbols.
- *
- * This macro ensures the correct handling of symbol visibility depending on the build context:
- * - If `LIBCORE_EXPORTS` is defined, symbols are exported (`Q_DECL_EXPORT`).
- * - Otherwise, symbols are imported (`Q_DECL_IMPORT`).
- */
-#ifdef LIBCORE_EXPORTS
-#  define LIBCORE_API Q_DECL_EXPORT
-#else
-#  define LIBCORE_API Q_DECL_IMPORT
-#endif
+#ifdef GRPC
+#include <QtGrpc/QGrpcChannelOptions>
+#include <QtGrpc/QGrpcCallReply>
+#include <QtGrpc/QGrpcHttp2Channel>
+#include <QtGrpc/QGrpcStatus>
+#include <QtGrpc/QGrpcSerializationFormat>
+#include <QtCore>
 
+#include "../src/core/proto/generated/auth_client.grpc.qpb.h"
+
+#endif // GRPC
 
 /*!
  * @def LOG()
@@ -77,7 +75,7 @@ namespace LibCore
  * such as user registration, login, and fetching current user information.
  * It follows the Singleton design pattern to ensure a single instance across the application.
  */
-class LIBCORE_API Server : public QObject
+class Server : public QObject
 {
     Q_OBJECT
 
@@ -125,6 +123,11 @@ public:
      * @brief Retrieves the current user's information from the server.
      */
     void getCurrentUserInfo();
+#ifdef GRPC
+    void authLoginGrpc(const QString& login, const QString& password);
+    void authRegisterGrpc(const QString& username, const QString& displayName,
+                          const QString& email, const QString& password, const QString& birthDate);
+#endif // GRPC
 
 private:
     explicit Server(const QString& serverAddress, int serverPort, QObject* parent = nullptr);
@@ -136,6 +139,11 @@ private:
     QNetworkAccessManager* networkManager;                  ///< The network manager for handling requests.
     QHash<QString, QPair<QString, QString>> routes;         ///< Hash-table of server routes.
     QTimer* timer;                                          ///< Timer for periodic tasks.
+
+#ifdef GRPC
+    std::shared_ptr<QAbstractGrpcChannel> channel;
+    std::shared_ptr<auth::AuthService::Client> authService;
+#endif // GRPC
 
 private slots:
 
@@ -180,7 +188,7 @@ signals:
  * This class is a Singleton responsible for storing and providing access to the
  * authenticated user's information, such as their access token, personal details, and status.
  */
-class LIBCORE_API User : public QObject
+class User : public QObject
 {
     Q_OBJECT
 
@@ -350,7 +358,7 @@ private:
  * This class is responsible for handling application settings, including
  * reading and writing to a configuration file. It follows the Singleton pattern.
  */
-class LIBCORE_API Settings  : public QSettings
+class Settings  : public QSettings
 {
     Q_OBJECT
 
@@ -405,7 +413,7 @@ private:
  * The class is designed as a singleton to ensure only one instance manages logging.
  *
  */
-class LIBCORE_API Logger : public QObject
+class Logger : public QObject
 {
     Q_OBJECT
 

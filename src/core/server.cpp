@@ -48,6 +48,15 @@ Server::Server(const QString& serverAddress, int serverPort, QObject* parent)
         {"get_user_friends",                qMakePair("GET", "/friends/:userId")}, // userId ???
     };
 
+#ifdef GRPC
+    // Создаем HTTP2-канал
+    channel = std::make_shared<QGrpcHttp2Channel>(QUrl("http://91.122.46.91:50051")); // TODO: вынести в config!!!!
+
+    // Инициализируем gRPC клиента
+    authService = std::make_shared<auth::AuthService::Client>();
+    authService->attachChannel(channel);
+#endif // GRPC
+
     // отправлять запросы только после логина!!!!!!!!!
     /* Set timer for send authRefresh() every 10 minutes*/
     QObject::connect(timer, &QTimer::timeout, this, &Server::authRefresh);
@@ -56,8 +65,8 @@ Server::Server(const QString& serverAddress, int serverPort, QObject* parent)
 
 Server::~Server() {
     delete networkManager;
-    delete m_instance;
-    m_instance = nullptr;
+    //delete m_instance;
+    //m_instance = nullptr;
 }
 
 void Server::authRegister(const QString& username, const QString& displayName,
@@ -94,7 +103,7 @@ void Server::authRegister(const QString& username, const QString& displayName,
         else if ((reply->error() != QNetworkReply::NoError) && (responseJsonObj["status"].toInt() != 0))
         {
             emit registerUnsucsessful(responseJsonObj["error"].toString());
-            LOG(Warning) << "Register user " << username << " unsucsessful. " << "Error: " << responseJsonObj["error"].toString() << "\n";
+            LOG(Error) << "Register user " << username << " unsucsessful. " << "Error: " << responseJsonObj["error"].toString() << "\n";
         }
         reply->deleteLater();
     });
@@ -102,8 +111,6 @@ void Server::authRegister(const QString& username, const QString& displayName,
 
 void Server::authLogin(const QString& login, const QString& password)
 {
-    auto* user = LibCore::User::instance();
-    user->setPassword(password);
 
     QUrl url(this->domen + this->routes["auth_login"].second);
     QNetworkRequest request(url);
@@ -126,6 +133,9 @@ void Server::authLogin(const QString& login, const QString& password)
 
         if ((reply->error() == QNetworkReply::NoError) && (responseJsonObj["status"].toInt() == 0))
         {
+            auto* user = LibCore::User::instance();
+            user->setPassword(password);
+
             QJsonObject tokenJsonObj = responseJsonObj["tokens"].toObject();
             user->setAccessToken(tokenJsonObj["accessToken"].toString());
             user->setRefreshToken(tokenJsonObj["refreshToken"].toString());
@@ -137,7 +147,7 @@ void Server::authLogin(const QString& login, const QString& password)
         else if ((reply->error() != QNetworkReply::NoError) && (responseJsonObj["status"].toInt() != 0))
         {
             emit loginUnsucsessful(responseJsonObj["error"].toString());
-            LOG(Warning) << "Login user " << login << " unsucsessful. " << "Error: " << responseJsonObj["error"].toString() << "\n";
+            LOG(Error) << "Login user " << login << " unsucsessful. " << "Error: " << responseJsonObj["error"].toString() << "\n";
         }
         reply->deleteLater();
     });
@@ -222,6 +232,103 @@ void Server::getCurrentUserInfo()
         }
     });
 }
+
+
+#ifdef GRPC
+/*-------------------- gRPC functions --------------------*/
+
+void Server::authLoginGrpc(const QString& login, const QString& password)
+{
+    auth::LoginRequest request;
+    request.setLogin(login);
+    request.setPassword(password);
+
+    std::unique_ptr<QGrpcCallReply> reply = authService->Login(request);
+
+    auto *replyPtr = reply.get();
+
+    QObject::connect(replyPtr, &QGrpcCallReply::finished, this, [this, reply = std::move(reply), login, password](const QGrpcStatus &status)
+    {
+        if (!status.isOk())
+        {
+            LOG(Error) << "Couldn't login user " << login << ". Stream error(" << int(status.code()) << "): " << status.message() << "\n";
+            emit loginUnsucsessful("Couldn't login due to internal server error");
+            return;
+        }
+
+        auto response = reply.get()->read<auth::LoginResponse>();
+        if (response->status() == 0)
+        {
+            auto* user = LibCore::User::instance();
+            user->setPassword(password);
+
+            auto userData = response->data().user();
+            auto userTokens = response->data().tokens();
+
+            user->setAccessToken(userTokens.accessToken());
+            user->setRefreshToken(userTokens.refreshToken());
+
+            user->setUserID(userData.userId());
+            user->setUsername(userData.userName());
+            user->setDisplayName(userData.displayName());
+            user->setEmail(userData.email());
+            user->setPhoneNumber(userData.phoneNumber());
+            user->setBirthDate(userData.birthDate());
+
+            emit loginSuccessful();
+            LOG(Info) << "Sucsessful login user " << login << "\n";
+        }
+        else
+        {
+            emit loginUnsucsessful("Couldn't login due to internal server error");
+            LOG(Error) << "Couldn't login user " << login << " due to internal server error\n";
+        }
+    });
+}
+
+void Server::authRegisterGrpc(const QString& username, const QString& displayName,
+                              const QString& email, const QString& password, const QString& birthDate)
+{
+    auth::RegisterRequest request;
+    request.setUserName(username);
+    request.setDisplayName(displayName);
+    request.setEmail(email);
+    request.setPassword(password);
+    request.setPhoneNumber("89818064354"); // TODO: fix this shit!
+    request.setBirthDate(birthDate);
+
+    std::unique_ptr<QGrpcCallReply> reply = authService->Register(request);
+
+    auto *replyPtr = reply.get();
+
+    QObject::connect(replyPtr, &QGrpcCallReply::finished, this, [this, reply = std::move(reply), username](const QGrpcStatus &status)
+    {
+        if (!status.isOk())
+        {
+            LOG(Error) << "Couldn't register user " << username << ". Stream error(" << int(status.code()) << "): " << status.message() << "\n";
+            emit registerUnsucsessful("Couldn't register due to internal server error");
+            return;
+        }
+
+        auto response = reply.get()->read<auth::RegisterResponse>();
+        if (response->status() == 0)
+        {
+            emit registerSucsessful();
+            LOG(Info) << "Sucsessful register user " << username << "\n";
+        }
+        else
+        {
+            emit registerUnsucsessful("Couldn't register due to internal server error");
+            LOG(Error) << "Couldn't register user " << username << " due to internal server error\n";
+        }
+    });
+}
+#endif // GRPC
+
+
+
+
+
 
 
 } // namespace LibCore
