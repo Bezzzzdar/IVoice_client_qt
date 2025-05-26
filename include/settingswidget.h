@@ -137,22 +137,22 @@ private slots:
     /*!
      * @brief [Slot] Handles the dark theme checkbox click event.
      */
-    void onDarkThemeCheckBoxClicked();
+    void onDarkThemeCheckBoxClicked() const;
 
     /*!
      * @brief [Slot] Handles the light theme checkbox click event.
      */
-    void onLightThemeCheckBoxClicked();
+    void onLightThemeCheckBoxClicked() const;
 
     /*!
      * @brief [Slot] Handles the Russian language checkbox click event.
      */
-    void onRuLanguageCheckBoxClicked();
+    void onRuLanguageCheckBoxClicked() const;
 
     /*!
      * @brief [Slot] Handles the English language checkbox click event.
      */
-    void onEnLanguageCheckBoxClicked();
+    void onEnLanguageCheckBoxClicked() const;
 };
 
 
@@ -162,7 +162,7 @@ private slots:
  *
  * This class extends @ref BaseWidget to combine account and appearance settings into a single interface with navigation.
  */
-class SettingsWidget : public BaseWidget
+class SettingsWidget final : public BaseWidget
 {
     Q_OBJECT
 
@@ -178,7 +178,7 @@ public:
     /*!
      * @brief Destructor for the class.
      */
-    ~SettingsWidget();
+    ~SettingsWidget() override;
 
 private:
     QStackedWidget *stackedWidget;                              ///< Pointer to the stacked widget for navigation.
@@ -211,24 +211,24 @@ private slots:
     /*!
      * @brief [Slot] Handles the user account button click event.
      */
-    void onUserAccountButtonClicked();
+    void onUserAccountButtonClicked() const;
 
     /*!
      * @brief [Slot] Handles the user account button click event.
      */
-    void onAppearanceButtonClicked();
+    void onAppearanceButtonClicked() const;
 
     /*!
      * @brief [Slot] Handles the user account button click event.
      */
-    void onCloseSettingsButtonClicked();
+    void onCloseSettingsButtonClicked() const;
 
 signals:
 
     /*!
      * @brief [Signal] Emitted when the settings widget is closed.
      */
-    void closeSettings();
+    void closeSettings() const;
 };
 
 #endif // SETTINGSWIDGET_H

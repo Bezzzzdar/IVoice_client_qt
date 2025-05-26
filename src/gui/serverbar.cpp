@@ -19,7 +19,7 @@ void ServerBar::initUI()
 
     /*  Initialize layouts for server bar
      *
-     *  mainLayout - for all widget
+     *  mainLayout - for the whole widget
      *  serversLayout - for servers and button for add server
      *  functionalLayout - for functional buttons: settingsButton and directMessagesButton
      *
@@ -78,7 +78,7 @@ void ServerBar::initUI()
     this->mainLayout->setSpacing(0);
 }
 
-void ServerBar::onSettingsButtonClicked()
+void ServerBar::onSettingsButtonClicked() const
 {
     emit this->showSettingsWidget();
 }

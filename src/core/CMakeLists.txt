@@ -36,7 +36,7 @@ endif()
 
 include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/include)
 
-file(GLOB LIBCORE_SOURCES . *.cpp)
+file(GLOB LIBCORE_SOURCES *.cpp)
 
 add_library(core SHARED
     ${LIBCORE_SOURCES}

@@ -20,7 +20,7 @@ void SideBar::initUI()
 
     /*  Initialize layouts for side bar
      *
-     *  mainLayout - for all widget
+     *  mainLayout - for the whole widget
      *  chatsLayout - for chats
      *  functionalLayout - for functional buttons: cameraButton, displayButton, microphoneButton, soundButton, hungUpButton
      *  userLayout - for info about user: username and avatar
@@ -116,7 +116,7 @@ void SideBar::initUI()
     this->mainLayout->setSpacing(0);
 }
 
-void SideBar::setUserLabelButtonText(const QString& text)
+void SideBar::setUserLabelButtonText(const QString& text) const
 {
     this->userLabelButton->setText(text);
 }

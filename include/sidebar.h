@@ -27,7 +27,7 @@
  * This class extends @ref BaseWidget to offer a set of functional buttons,
  * such as for camera and microphone control, as well as a search box and user-related features.
  */
-class SideBar : public BaseWidget
+class SideBar final : public BaseWidget
 {
     Q_OBJECT
 
@@ -42,13 +42,13 @@ public:
     /*!
      * @brief Class destructor.
      */
-    ~SideBar();
+    ~SideBar() override;
 
     /*!
      * @brief Sets the text of the user label button.
      * @param text The text to display on the user label button.
      */
-    void setUserLabelButtonText(const QString& text);
+    void setUserLabelButtonText(const QString& text) const;
 
 private:
     QVBoxLayout *mainLayout;                    ///< Main vertical layout for the sidebar.

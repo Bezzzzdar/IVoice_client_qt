@@ -75,16 +75,36 @@ namespace LibCore
  * such as user registration, login, and fetching current user information.
  * It follows the Singleton design pattern to ensure a single instance across the application.
  */
-class Server : public QObject
+class Server final : public QObject
 {
     Q_OBJECT
 
 public:
-
-    Server(const Server&) = delete;
-    Server& operator = (const Server&) = delete;
-    Server(Server&&) = delete;
-    Server& operator = (Server&&) = delete;
+    /*!
+     * @enum requestType
+     * @brief Represents the different types of requests to server.
+     */
+    enum requestType
+    {
+        RequestTypeAuthRegister,
+        RequestTypeAuthLogin,
+        RequestTypeAuthLogout,
+        RequestTypeAuthRefresh,
+        RequestTypeGetCurrentUser,
+        RequestTypeUpdateCurrentUser,
+        RequestTypeDeleteCurrentUser,
+        RequestTypeGetCurrentUserDetails,
+        RequestTypeUpdateCurrentUserDetails,
+        RequestTypeDeleteCurrentUserDetails,
+        RequestTypeGetOtherUserInfo,
+        RequestTypeGetOtherUserDetails,
+        RequestTypeUpdatePassword,
+        RequestTypeGetFriendsList,
+        RequestTypeSendFriendRequest,
+        RequestTypeHandleFriendRequest,
+        RequestTypeDeleteFriend,
+        RequestTypeGetUserFriends
+    };
 
     /*!
      * @brief Retrieves the single instance of the class.
@@ -92,12 +112,7 @@ public:
      * @param serverPort The server port. Defaults to 0
      * @return The instance of the class.
      */
-    static Server* instance(const QString& serverAddress = "", int serverPort = 0);
-
-    /*!
-     * @brief Class destructor.
-     */
-    ~Server();
+    static Server* instance(const QString& serverAddress = "", const int serverPort = 0);
 
     /*!
      * @brief Registers a new user on the server.
@@ -105,15 +120,16 @@ public:
      * @param displayName The display name for the new user.
      * @param email The email address for the new user.
      * @param password The password for the new user.
+     * @param phoneNumber The phone number for the new user.
      * @param birthDate The birth date of the user.
      */
     void authRegister(const QString& username, const QString& displayName,
                       const QString& email, const QString& password,
-                      const QString& birthDate);
+                      const QString& phoneNumber, const QString& birthDate);
 
     /*!
      * @brief Authenticates a user by logging them in.
-     * @param login The username, email or phone number for login.
+     * @param login The username, email, or phone number for login.
      * @param password The password for login.
      */
     void authLogin(const QString& login, const QString& password);
@@ -131,14 +147,18 @@ public:
 
 private:
     explicit Server(const QString& serverAddress, int serverPort, QObject* parent = nullptr);
+    ~Server() override;
 
-    static Server* m_instance;                              ///< The single instance of the class.
-    static QMutex mutex;                                    ///< Mutex for thread safety.
+    Server(const Server&) = delete;
+    Server& operator = (const Server&) = delete;
 
-    QString domen;                                          ///< The domain of the server.
-    QNetworkAccessManager* networkManager;                  ///< The network manager for handling requests.
-    QHash<QString, QPair<QString, QString>> routes;         ///< Hash-table of server routes.
-    QTimer* timer;                                          ///< Timer for periodic tasks.
+    QUrl createUrl(requestType type) const;
+
+    static constexpr int32_t DELAY_BETWEEN_REFRESH = 600000;    ///< Delay between refresh tokens in milliseconds
+    QString domain;                                             ///< The domain of the server.
+    QNetworkAccessManager* networkManager;                      ///< The network manager for handling requests.
+    QHash<requestType, QPair<QString, QString>> routes;         ///< Hash-table of server routes.
+    QTimer* timer;                                              ///< Timer for periodic tasks.
 
 #ifdef GRPC
     std::shared_ptr<QAbstractGrpcChannel> channel;
@@ -152,19 +172,25 @@ private slots:
      */
     void authRefresh();
 
+    /*!
+     * @brief [Slot] Start the timer for refreshing tokens every 10 minutes.
+     * @see Server::authRefresh
+     */
+    void startTimer();
+
 signals:
     /*!
      * @brief [Signal] Emitted when user registration is successful.
-     * @see RegisterWindow::onRegisterSucsessful
+     * @see RegisterWindow::onRegisterSuccessful
      */
-    void registerSucsessful();
+    void registerSuccessful();
 
     /*!
      * @brief [Signal] Emitted when user registration fails.
      * @param errorMessage The error message describing the failure.
-     * @see RegisterWindow::onRegisterUnsucsessful
+     * @see RegisterWindow::onRegisterUnsuccessful
      */
-    void registerUnsucsessful(const QString &errorMessage);
+    void registerUnsuccessful(const QString &errorMessage);
 
     /*!
      * @brief [Signal] Emitted when user login is successful.
@@ -177,7 +203,7 @@ signals:
      * @param errorMessage The error message describing the failure.
      * @see LoginWindow::onLoginUnsuccessful
      */
-    void loginUnsucsessful(const QString &errorMessage);
+    void loginUnsuccessful(const QString &errorMessage);
 };
 
 
@@ -188,28 +214,17 @@ signals:
  * This class is a Singleton responsible for storing and providing access to the
  * authenticated user's information, such as their access token, personal details, and status.
  */
-class User : public QObject
+class User final : public QObject
 {
     Q_OBJECT
 
 public:
-
-    User(const User&) = delete;
-    User& operator = (const User&) = delete;
-    User(User&&) = delete;
-    User& operator = (User&&) = delete;
-
     /*!
      * @brief Retrieves the single instance of the class.
      * @param parent Pointer to the parent object. Defaults to `nullptr`.
      * @return The instance of the class.
      */
     static User* instance(QObject* parent = nullptr);
-
-    /*!
-     * @brief Class destructor.
-     */
-    ~User();
 
     /*!
      * @brief Sets the user's access token.
@@ -271,6 +286,17 @@ public:
      */
     void setStatus(const QString& status);
 
+    /*!
+    * @brief Sets the user's last activity time.
+    * @param lastActivity last activity time.
+    */
+    void setLastActivity(const QString& lastActivity);
+
+    /*!
+    * @brief Sets the user's last online time.
+    * @param lastOnline last online time.
+    */
+    void setLastOnline(const QString& lastOnline);
 
     /*!
      * @brief Retrieves the user's access token.
@@ -332,10 +358,25 @@ public:
      */
     QString getStatus();
 
+    /*!
+    * @brief Retrieves the user's last activity time.
+    * @return Last activity time.
+    */
+    QString getLastActivity();
+
+    /*!
+    * @brief Retrieves the user's last online time.
+    * @return Last online time.
+    */
+    QString getLastOnline();
+
 private:
     explicit User(QObject* parent = nullptr);
+    ~User() override;
 
-    static User* m_instance;            ///< The single instance of the class.
+    User(const User&) = delete;
+    User& operator = (const User&) = delete;
+
     static QMutex mutex;                ///< Mutex for thread safety.
 
     QString accessToken;                ///< The user's access token.
@@ -348,6 +389,8 @@ private:
     QString password;                   ///< The user's password.
     QString birthDate;                  ///< The user's birth date.
     QString status;                     ///< The user's status (e.g., online or offline).
+    QString lastActivity;
+    QString lastOnline;
 };
 
 
@@ -358,27 +401,16 @@ private:
  * This class is responsible for handling application settings, including
  * reading and writing to a configuration file. It follows the Singleton pattern.
  */
-class Settings  : public QSettings
+class Settings final : public QSettings
 {
     Q_OBJECT
 
 public:
-
-    Settings(const Settings&) = delete;
-    Settings& operator=(const Settings&) = delete;
-    Settings(Settings&&) = delete;
-    Settings& operator=(Settings&&) = delete;
-
     /*!
      * @brief Retrieves the single instance of the class.
      * @return The instance of the class.
      */
     static Settings* instance();
-
-    /*!
-     * @brief Class destructor.
-     */
-    ~Settings();
 
     /*!
      * @brief Retrieves a setting value.
@@ -396,11 +428,12 @@ public:
 
 private:
     explicit Settings();
+    ~Settings() override;
+
+    Settings(const Settings&) = delete;
+    Settings& operator=(const Settings&) = delete;
 
     const QString configFilePath;           ///< The path to the configuration file.
-
-    static Settings* m_instance;            ///< The single instance of the class.
-    static QMutex mutex;                    ///< Mutex for thread safety.
 };
 
 
@@ -413,7 +446,7 @@ private:
  * The class is designed as a singleton to ensure only one instance manages logging.
  *
  */
-class Logger : public QObject
+class Logger final : public QObject
 {
     Q_OBJECT
 
@@ -428,7 +461,7 @@ public:
      * - Info: General informational messages.
      * - Warning: Indications of potential issues.
      * - Error: Error messages indicating failures.
-     * - Critical: Critical errors requiring immediate attention.
+     * - Critical: Critical errors require immediate attention.
      */
     enum logLevel
     {
@@ -445,11 +478,6 @@ public:
      */
     static Logger* instance();
 
-    Logger(const Logger&) = delete;
-    Logger& operator=(const Logger&) = delete;
-    Logger(Logger&&) = delete;
-    Logger& operator=(Logger&&) = delete;
-
     /*!
      * @brief Sets the log file path.
      *
@@ -460,7 +488,7 @@ public:
      */
     void setLogFile(const QString& logFilePath);
 
-    Logger& operator<<(logLevel level)
+    Logger& operator<<(const logLevel level)
     {
         QMutexLocker locker(&mutex);
 
@@ -484,25 +512,22 @@ public:
         return *this << QString(message);
     }
 
-    Logger& operator<<(int value)
+    Logger& operator<<(const int value)
     {
         return *this << QString::number(value);
     }
 
-    Logger& operator<<(double value)
+    Logger& operator<<(const double value)
     {
         return *this << QString::number(value);
     }
-
-    /*!
-     * @brief Class destructor.
-     *
-     * Closes the log file if it is open.
-     */
-    ~Logger();
 
 private:
     explicit Logger();
+    ~Logger() override;
+
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
 
     /*!
      * @brief Flushes the current log message to the file.
@@ -517,9 +542,8 @@ private:
      * @param level The log level to convert.
      * @return A QString representing the log level.
      */
-    QString logLevelToString(logLevel level) const;
+    static QString logLevelToString(logLevel level);
 
-    static Logger* m_instance;              ///< The single instance of the class.
     static QMutex mutex;                    ///< Mutex for thread safety.
 
     QFile logFile;                          ///< The file where log messages are written.

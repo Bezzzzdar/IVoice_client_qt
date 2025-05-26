@@ -8,7 +8,7 @@
 BaseWidget::BaseWidget(QWidget *parent)
     : QWidget(parent) {}
 
-BaseWidget::~BaseWidget() {}
+BaseWidget::~BaseWidget() = default;
 
 void BaseWidget::paintEvent(QPaintEvent *event)
 {
@@ -20,10 +20,9 @@ void BaseWidget::paintEvent(QPaintEvent *event)
 
 void BaseWidget::applyStyles()
 {
-    QFile styleFile(":/resources/styles/styles.qss");
-    if (styleFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (QFile styleFile(":/resources/styles/styles.qss"); styleFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QString styleSheet = styleFile.readAll();
+        const QString styleSheet = styleFile.readAll();
 
         this->setStyleSheet(styleSheet);
 
@@ -46,7 +45,7 @@ void BaseWidget::initialize()
 BaseDialog::BaseDialog(QWidget *parent)
     : QDialog(parent) {}
 
-BaseDialog::~BaseDialog() {}
+BaseDialog::~BaseDialog() = default;
 
 void BaseDialog::paintEvent(QPaintEvent *event)
 {
@@ -58,10 +57,9 @@ void BaseDialog::paintEvent(QPaintEvent *event)
 
 void BaseDialog::applyStyles()
 {
-    QFile styleFile(":/resources/styles/styles.qss");
-    if (styleFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (QFile styleFile(":/resources/styles/styles.qss"); styleFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QString styleSheet = styleFile.readAll();
+        const QString styleSheet = styleFile.readAll();
 
         this->setStyleSheet(styleSheet);
 

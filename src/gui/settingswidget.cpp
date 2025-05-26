@@ -32,7 +32,7 @@ void SettingsAccountWidget::initUI()
 
     /*  Initialize layouts for account settings widget
      *
-     *  mainLayout - for all widget
+     *  mainLayout - for the whole widget
      *  usernameLayout - for username
      *  displayNameLayout - for display name
      *  emailLayout - for user's email
@@ -126,10 +126,9 @@ void SettingsAccountWidget::initUI()
     this->statusField = new QComboBox(this);
     this->statusField->setObjectName("SettingsWidgetStatusComboBox");
     this->statusField->setFixedSize(fieldFixedSize);
-    QStringList statuses = {"Online", "Offline", "Do not disturb", "Invisible"};
+    const QStringList statuses = {"online", "offline", "do not disturb", "invisible"};
     this->statusField->addItems(statuses);
-    int index = statusField->findText("Online");
-    if (index != -1)
+    if (const int index = statusField->findText(user->getStatus()); index != -1)
     {
         statusField->setCurrentIndex(index);
     }
@@ -236,7 +235,7 @@ void SettingsAppearanceWidget::initUI()
      *  enLanguageCheckBox - switch to english language
      *
      */
-    QSize checkBoxFixedSize(350, 40);
+    constexpr const QSize checkBoxFixedSize(350, 40);
     this->darkThemeCheckBox = new QCheckBox("Dark", this);
     this->darkThemeCheckBox->setFixedSize(checkBoxFixedSize);
     this->darkThemeCheckBox->setObjectName("SettingsCheckBox");
@@ -283,7 +282,7 @@ void SettingsAppearanceWidget::initUI()
     setLayout(this->mainLayout);
 }
 
-void SettingsAppearanceWidget::onDarkThemeCheckBoxClicked()
+void SettingsAppearanceWidget::onDarkThemeCheckBoxClicked() const
 {
     if (this->lightThemeCheckBox->isChecked())
     {
@@ -295,7 +294,7 @@ void SettingsAppearanceWidget::onDarkThemeCheckBoxClicked()
     }
 }
 
-void SettingsAppearanceWidget::onLightThemeCheckBoxClicked()
+void SettingsAppearanceWidget::onLightThemeCheckBoxClicked() const
 {
     if (this->darkThemeCheckBox->isChecked())
     {
@@ -307,7 +306,7 @@ void SettingsAppearanceWidget::onLightThemeCheckBoxClicked()
     }
 }
 
-void SettingsAppearanceWidget::onRuLanguageCheckBoxClicked()
+void SettingsAppearanceWidget::onRuLanguageCheckBoxClicked() const
 {
     if (this->enLanguageCheckBox->isChecked())
     {
@@ -319,7 +318,7 @@ void SettingsAppearanceWidget::onRuLanguageCheckBoxClicked()
     }
 }
 
-void SettingsAppearanceWidget::onEnLanguageCheckBoxClicked()
+void SettingsAppearanceWidget::onEnLanguageCheckBoxClicked() const
 {
     if (this->ruLanguageCheckBox->isChecked())
     {
@@ -444,17 +443,17 @@ void SettingsWidget::initUI()
     setLayout(this->mainLayout);
 }
 
-void SettingsWidget::onUserAccountButtonClicked()
+void SettingsWidget::onUserAccountButtonClicked() const
 {
     this->stackedWidget->setCurrentWidget(this->settingsAccountWidget);
 }
 
-void SettingsWidget::onAppearanceButtonClicked()
+void SettingsWidget::onAppearanceButtonClicked() const
 {
     this->stackedWidget->setCurrentWidget(this->settingsAppearanceWidget);
 }
 
-void SettingsWidget::onCloseSettingsButtonClicked()
+void SettingsWidget::onCloseSettingsButtonClicked() const
 {
     emit this->closeSettings();
 }

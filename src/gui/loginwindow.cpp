@@ -6,12 +6,12 @@ LoginWindow::LoginWindow(QWidget *parent, QStackedWidget *stack)
 {
     this->initialize();
 
-    auto* server = LibCore::Server::instance();
-    connect(server, SIGNAL(loginSuccessful()), this, SLOT(onLoginSuccessful()));
-    connect(server, SIGNAL(loginUnsucsessful(QString)), this, SLOT(onLoginUnsuccessful(QString)));
+    const auto* server = LibCore::Server::instance();
+    connect(server, &LibCore::Server::loginSuccessful, this, &LoginWindow::onLoginSuccessful);
+    connect(server, &LibCore::Server::loginUnsuccessful, this, &LoginWindow::onLoginUnsuccessful);
 }
 
-LoginWindow::~LoginWindow() {}
+LoginWindow::~LoginWindow() = default;
 
 void LoginWindow::initUI()
 {
@@ -20,7 +20,7 @@ void LoginWindow::initUI()
 
     /*  Initialize layouts for register window
      *
-     *  mainLayout - for all widget
+     *  mainLayout - for the whole widget
      *
      */
     this->mainLayout = new QVBoxLayout(this);
@@ -80,16 +80,16 @@ void LoginWindow::initUI()
     this->mainLayout->addWidget(noAccountButton);
 }
 
-void LoginWindow::onLoginButtonClicked()
+void LoginWindow::onLoginButtonClicked() const
 {
-    QString login = this->loginField->text();
-    QString password = this->passwordField->text();
+    const QString login = this->loginField->text();
+    const QString password = this->passwordField->text();
 
     auto* server = LibCore::Server::instance();
     server->authLogin(login, password);
 }
 
-void LoginWindow::onNoAccountButtonClicked()
+void LoginWindow::onNoAccountButtonClicked() const
 {
     stackedWidget->setCurrentIndex(1);
 

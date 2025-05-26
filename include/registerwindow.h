@@ -27,7 +27,7 @@
  * It includes input fields for user details such as email, password, and display name,
  * as well as methods to handle registration events.
  */
-class RegisterWindow : public BaseWidget
+class RegisterWindow final : public BaseWidget
 {
     Q_OBJECT
 
@@ -43,7 +43,7 @@ public:
     /*!
      * @brief Class Destructor.
      */
-    ~RegisterWindow();
+    ~RegisterWindow() override;
 
 private:
     QVBoxLayout *mainLayout;                ///< Main vertical layout for the register window
@@ -52,6 +52,7 @@ private:
     QLineEdit *passwordField;               ///< Input field for entering the user's password.
     QLineEdit *usernameField;               ///< Input field for entering the user's username.
     QLineEdit *displayNameField;            ///< Input field for entering the user's display name.
+    QLineEdit *phoneNumberField;            ///< Input field for entering the user's phone number.
     QLineEdit *birthDateField;              ///< Input field for entering the user's birth date.
     QPushButton *registerButton;            ///< Button to initiate the registration process.
     QStackedWidget *stackedWidget;          ///< Pointer to the stacked widget for screen navigation.
@@ -71,18 +72,18 @@ private slots:
     /*!
      * @brief [Slot] Handles the click event for the register button.
      */
-    void onRegisterButtonClicked();
+    void onRegisterButtonClicked() const;
 
     /*!
      * @brief [Slot] Handles the event when the registration process is successful.
      */
-    void onRegisterSucsessful();
+    void onRegisterSuccessful();
 
     /*!
      * @brief [Slot] Handles the event when the registration process fails.
      * @param errorMessage The error message describing the reason for failure.
      */
-    void onRegisterUnsucsessful(const QString &errorMessage);
+    void onRegisterUnsuccessful(const QString &errorMessage);
 };
 
 #endif // REGISTERWINDOW_H

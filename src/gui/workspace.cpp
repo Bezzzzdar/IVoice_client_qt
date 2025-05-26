@@ -13,7 +13,7 @@ void WorkSpace::initUI()
     this->setObjectName("WorkSpace");
     /*  Initialize layouts for workspace
      *
-     *  mainLayout - for all widget
+     *  mainLayout - for the whole widget
      *  To be continued...
      *
      */

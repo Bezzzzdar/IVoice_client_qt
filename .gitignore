@@ -2,3 +2,4 @@ build
 .PVS-Studio
 CMakeLists.txt.user
 proto*
+*.idea
