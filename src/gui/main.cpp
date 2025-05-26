@@ -12,8 +12,8 @@ int main(int argc, char *argv[])
 
     auto* settings = LibCore::Settings::instance();
     LOG(Info) << "Init settings\n";
-    QString serverAddress = settings->getSetting("network/server").toString();
-    int serverPort = settings->getSetting("network/port").toInt();
+    const QString serverAddress = settings->getSetting("network/server").toString();
+    const int serverPort = settings->getSetting("network/port").toInt();
 
     auto* server = LibCore::Server::instance(serverAddress, serverPort);
     LOG(Info) << "Run server\n";

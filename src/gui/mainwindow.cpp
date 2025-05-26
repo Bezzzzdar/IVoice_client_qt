@@ -6,12 +6,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     this->initUI();
 
-    auto* server = LibCore::Server::instance();
+    const auto* server = LibCore::Server::instance();
 
-    connect(server, SIGNAL(loginSuccessful()), this, SLOT(switchToMainUI()));
+    connect(server, &LibCore::Server::loginSuccessful, this, &MainWindow::switchToMainUI);
 }
 
-MainWindow::~MainWindow() {}
+MainWindow::~MainWindow() = default;
 
 void MainWindow::initUI()
 {
@@ -69,10 +69,10 @@ void MainWindow::switchToMainUI()
     this->mainStackedWidget->setCurrentWidget(this->centralWidget);
 
     auto* user = LibCore::User::instance();
-    this->sideBar->setUserLabelButtonText(user->getUsername() + "\nonline");
+    this->sideBar->setUserLabelButtonText(user->getUsername() + "\n" + user->getStatus());
 }
 
-void MainWindow::switchToSettingsWidget()
+void MainWindow::switchToSettingsWidget() const
 {
     this->mainStackedWidget->setCurrentWidget(this->settingsWidget);
 }

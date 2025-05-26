@@ -2,7 +2,6 @@
 
 namespace LibCore {
 
-User* User::m_instance = nullptr;
 QMutex User::mutex;
 
 User::User(QObject* parent)
@@ -18,12 +17,8 @@ User::~User()
 
 User* User::instance(QObject* parent)
 {
-    if (!m_instance)
-    {
-        QMutexLocker locker(&mutex);
-        m_instance = new User(parent);
-    }
-    return m_instance;
+    static User user_instance(parent);
+    return &user_instance;
 }
 
 /*************************************************************
@@ -90,6 +85,18 @@ void User::setStatus(const QString& status)
     this->status = status;
 }
 
+void User::setLastActivity(const QString& lastActivity)
+{
+    QMutexLocker locker(&mutex);
+    this->lastActivity = lastActivity;
+}
+
+void User::setLastOnline(const QString& lastOnline)
+{
+    QMutexLocker locker(&mutex);
+    this->lastOnline = lastOnline;
+}
+
 /*************************************************************
  *
  *                          Getters
@@ -153,6 +160,18 @@ QString User::getStatus()
 {
     QMutexLocker locker(&mutex);
     return this->status;
+}
+
+QString User::getLastActivity()
+{
+    QMutexLocker locker(&mutex);
+    return this->lastActivity;
+}
+
+QString User::getLastOnline()
+{
+    QMutexLocker locker(&mutex);
+    return this->lastOnline;
 }
 
 } // namespace LibCore

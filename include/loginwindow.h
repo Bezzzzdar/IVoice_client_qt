@@ -27,7 +27,7 @@
  * This class extends @ref BaseWidget to create a user interface for logging into the application.
  * It provides input fields for credentials, buttons for user actions, and handles login events.
  */
-class LoginWindow : public BaseWidget
+class LoginWindow final : public BaseWidget
 {
     Q_OBJECT
 
@@ -43,7 +43,7 @@ public:
     /*!
      * @brief Class destructor.
      */
-    ~LoginWindow();
+    ~LoginWindow() override;
 
 private:
     QVBoxLayout *mainLayout;            ///< Main vertical layout for login window.
@@ -69,12 +69,12 @@ private slots:
     /*!
      * @brief [Slot] Handles the click event for the login button.
      */
-    void onLoginButtonClicked();
+    void onLoginButtonClicked() const;
 
     /*!
      * @brief [Slot] Handles the click event for the no account button.
      */
-    void onNoAccountButtonClicked();
+    void onNoAccountButtonClicked() const;
 
     /*!
      * @brief [Slot] Handles the event when the login process is successful.

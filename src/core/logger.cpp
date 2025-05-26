@@ -1,8 +1,6 @@
 #include "core.h"
 
 namespace LibCore {
-
-Logger* Logger::m_instance = nullptr;
 QMutex Logger::mutex;
 
 Logger::Logger() {}
@@ -13,20 +11,12 @@ Logger::~Logger()
     {
         this->logFile.close();
     }
-
-    delete m_instance;
-    m_instance = nullptr;
 }
 
 Logger* Logger::instance()
 {
-    if (m_instance == nullptr)
-    {
-        QMutexLocker locker(&mutex);
-        m_instance = new Logger();
-    }
-    return m_instance;
-
+    static Logger logger_instance;
+    return &logger_instance;
 }
 
 void Logger::setLogFile(const QString& logFilePath)
@@ -65,8 +55,7 @@ void Logger::flush()
     }
 }
 
-QString Logger::logLevelToString(logLevel level) const
-{
+QString Logger::logLevelToString(const logLevel level) {
     switch (level)
     {
         case Debug: return "DEBUG";

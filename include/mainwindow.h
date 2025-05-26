@@ -44,7 +44,7 @@
  * and settings widget. It provides navigation between these components and serves as the
  * central interface of the application.
  */
-class MainWindow : public QMainWindow
+class MainWindow final : public QMainWindow
 {
     Q_OBJECT
 
@@ -54,12 +54,12 @@ public:
      * @brief Class constructor.
      * @param parent Pointer to the parent widget. Defaults to `nullptr`.
      */
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
 
     /*!
      * @brief Destructor for the class.
      */
-    ~MainWindow();
+    ~MainWindow() override;
 
 private:
     QWidget *centralWidget;                 ///< The central widget of the main window.
@@ -87,7 +87,7 @@ private slots:
     /*!
      * @brief [Slot] Switches the view to the settings widget.
      */
-    void switchToSettingsWidget();
+    void switchToSettingsWidget() const;
 };
 
 #endif // MAINWINDOW_H

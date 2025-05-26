@@ -37,7 +37,7 @@ public:
     /*!
      * @brief Class destructor.
      */
-    virtual ~BaseWidget();
+    virtual ~BaseWidget() override;
 
     /*!
      * @brief Initializes the widget by calling necessary setup functions.

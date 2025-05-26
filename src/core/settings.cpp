@@ -2,9 +2,6 @@
 
 namespace LibCore {
 
-Settings* Settings::m_instance = nullptr;
-QMutex Settings::mutex;
-
 Settings::Settings()
     : QSettings("config/config.ini", QSettings::IniFormat)
 {
@@ -16,12 +13,8 @@ Settings::~Settings()
 
 Settings* Settings::instance()
 {
-    if (!m_instance)
-    {
-        QMutexLocker locker(&mutex);
-        m_instance = new Settings();
-    }
-    return m_instance;
+    static Settings settings_instance;
+    return &settings_instance;
 }
 
 QVariant Settings::getSetting(const QString& key)

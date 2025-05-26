@@ -21,7 +21,7 @@
  * This class extends @ref BaseWidget to provide the main workspace.
  * It serves as a container for application-specific content and manages its user interface.
  */
-class WorkSpace : public BaseWidget
+class WorkSpace final : public BaseWidget
 {
     Q_OBJECT
 
@@ -36,7 +36,7 @@ public:
     /*!
      * @brief Class destructor.
      */
-    ~WorkSpace();
+    ~WorkSpace() override;
 
 private:
     QHBoxLayout *mainLayout;        ///< The main horizontal layout for the workspace.

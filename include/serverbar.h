@@ -25,7 +25,7 @@
  * This class extends @ref BaseWidget for organizing server-related
  * functionality, such as adding servers, accessing settings, and managing direct messages.
  */
-class ServerBar : public BaseWidget
+class ServerBar final : public BaseWidget
 {
     Q_OBJECT
 
@@ -40,7 +40,7 @@ public:
     /*!
      * @brief Destroys the class.
      */
-    ~ServerBar();
+    ~ServerBar() override;
 
 protected:
 
@@ -67,14 +67,14 @@ signals:
     /*!
      * @brief [Signal] Emitted when the settings button is clicked.
      */
-    void showSettingsWidget();
+    void showSettingsWidget() const;
 
 private slots:
 
     /*!
      * @brief [Slot] Handles the settings button click event.
      */
-    void onSettingsButtonClicked();
+    void onSettingsButtonClicked() const;
 };
 
 #endif // SERVERBAR_H
